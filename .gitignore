@@ -1,0 +1,111 @@
+# AnalogChannel .gitignore
+# Only track source code, licenses, and credits
+
+# =============================================================================
+# JUCE Auto-Generated Files (DO NOT COMMIT)
+# =============================================================================
+JuceLibraryCode/
+
+# =============================================================================
+# Build Outputs and IDE Files (DO NOT COMMIT)
+# =============================================================================
+
+# Build directories
+Builds/
+build/
+cmake-build-*/
+
+# Visual Studio
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.vcxproj.filters
+*.vcxproj.user
+.vs/
+*.opensdf
+*.sdf
+*.opendb
+*.VC.db
+*.VC.VC.opendb
+
+# Visual Studio build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+
+# Xcode
+*.xcodeproj/
+*.xcworkspace/
+DerivedData/
+*.hmap
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Linux
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+
+# =============================================================================
+# Internal documents, screenshots and tools
+# =============================================================================
+Docs/
+CLAUDE.md
+
+# =============================================================================
+# Plugin Binaries (DO NOT COMMIT)
+# =============================================================================
+*.vst3
+*.vst
+*.component
+*.dll
+*.dylib
+*.so
+
+# =============================================================================
+# Temporary and Cache Files
+# =============================================================================
+*.swp
+*.swo
+*~
+*.tmp
+*.bak
+*.log
+*.cache
+
+# Visual Studio Code
+.vscode/
+
+# CLion
+.idea/
+cmake-build-*/
+
+# =============================================================================
+# KEEP THESE FILES (explicitly track important files)
+# =============================================================================
+# The following are NOT ignored:
+# - Source/**/*.h
+# - Source/**/*.cpp
+# - LICENSE
+# - CREDITS.md
+# - README.md
+# - AnalogChannel.jucer
+# - .gitignore (this file)
