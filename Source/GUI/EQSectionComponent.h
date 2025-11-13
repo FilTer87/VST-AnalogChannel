@@ -231,8 +231,8 @@ public:
     {
         auto bounds = getLocalBounds().toFloat();
 
-        // Background panel
-        g.setColour (AnalogChannelColors::PANEL_BG);
+        // Background panel with custom color (#4c4c4c)
+        g.setColour (juce::Colour (0xff4c4c4c));
         g.fillRoundedRectangle (bounds.reduced (2.0f), 4.0f);
 
         // Border
@@ -269,14 +269,14 @@ public:
         else if (slider == &bassFreqKnob)
         {
             // Bass: inverted scale (6500Hz = 0.0, 600Hz = 10.0)
-            float freqHz = bassFreqKnob.getValue();
+            float freqHz = static_cast<float>(bassFreqKnob.getValue());
             float midCutValue = juce::jmap (freqHz, 6500.0f, 600.0f, 0.0f, 10.0f);
             bassFreqLabel.setText (juce::String (midCutValue, 1), juce::dontSendNotification);
         }
         else if (slider == &trebleFreqKnob)
         {
             // Treble: direct scale (3500Hz = 0.0, 8200Hz = 10.0)
-            float freqHz = trebleFreqKnob.getValue();
+            float freqHz = static_cast<float>(trebleFreqKnob.getValue());
             float midCutValue = juce::jmap (freqHz, 3500.0f, 8200.0f, 0.0f, 10.0f);
             trebleFreqLabel.setText (juce::String (midCutValue, 1), juce::dontSendNotification);
         }
@@ -382,12 +382,12 @@ private:
                                 juce::dontSendNotification);
 
         // Update Bass frequency label from parameter (inverted scale)
-        float bassFreqHz = bassFreqKnob.getValue();
+        float bassFreqHz = static_cast<float>(bassFreqKnob.getValue());
         float bassMidCutValue = juce::jmap (bassFreqHz, 6500.0f, 600.0f, 0.0f, 10.0f);
         bassFreqLabel.setText (juce::String (bassMidCutValue, 1), juce::dontSendNotification);
 
         // Update Treble frequency label from parameter (direct scale)
-        float trebleFreqHz = trebleFreqKnob.getValue();
+        float trebleFreqHz = static_cast<float>(trebleFreqKnob.getValue());
         float trebleMidCutValue = juce::jmap (trebleFreqHz, 3500.0f, 8200.0f, 0.0f, 10.0f);
         trebleFreqLabel.setText (juce::String (trebleMidCutValue, 1), juce::dontSendNotification);
     }

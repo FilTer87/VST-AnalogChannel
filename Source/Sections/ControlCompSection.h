@@ -23,8 +23,8 @@ class ControlCompSection : public BypassableSection
 public:
     enum ARMode
     {
-        Fast = 0,   // Attack=0.2ms, Release=15ms
-        Normal = 1  // Attack=20ms, Release=70ms
+        Fast = 0,   // Attack=0.2ms, Release=40ms, Ratio=4:1
+        Normal = 1  // Attack=30ms, Release=100ms, Ratio=2.5:1
     };
 
     ControlCompSection() = default;
@@ -84,19 +84,22 @@ private:
     void updateCompressorParameters()
     {
         // Attack/Release presets
-        float attackMS, releaseMS;
+        // Both modes: RMS Size=0 (peak), Auto Make-up=NO, Output=0dB, Character=Compress (NO limit)
+        float attackMS, releaseMS, ratioValue;
         if (arMode == Fast)
         {
             attackMS = 0.2f;
-            releaseMS = 15.0f;
+            releaseMS = 40.0f;
+            ratioValue = 4.0f;  // Fast mode: Ratio 4:1
         }
         else // Normal
         {
-            attackMS = 20.0f;
-            releaseMS = 70.0f;
+            attackMS = 30.0f;
+            releaseMS = 100.0f;
+            ratioValue = 2.5f;  // Normal mode: Ratio 2.5:1
         }
 
-        compressor.setParameters (thresholdDB, 4.0f, attackMS, releaseMS);  // Fixed ratio 4:1
+        compressor.setParameters (thresholdDB, ratioValue, attackMS, releaseMS);
     }
 
     //==============================================================================

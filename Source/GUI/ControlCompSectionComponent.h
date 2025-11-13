@@ -38,7 +38,8 @@ public:
         thresholdLabel.setColour (juce::Label::textColourId, AnalogChannelColors::TEXT_MAIN);
         addAndMakeVisible (thresholdLabel);
 
-        // Attack/Release toggle button (single button: OFF=NORMAL, ON=FAST)
+        // Attack/Release toggle button
+        // Parameter order: { "Normal", "Fast" } → OFF (gray) = Normal, ON (orange) = Fast
         arButton.setButtonText ("FAST Atk/Rel");
         arButton.setClickingTogglesState (true);
         addAndMakeVisible (arButton);
@@ -59,7 +60,7 @@ public:
             apvts, "ctrlCompBypass", activeButton);
 
         // Section label
-        sectionLabel.setText ("CONTROL-COMP", juce::dontSendNotification);
+        sectionLabel.setText ("CLEAN COMP.", juce::dontSendNotification);
         sectionLabel.setJustificationType (juce::Justification::centred);
         sectionLabel.setColour (juce::Label::textColourId, AnalogChannelColors::TEXT_HIGHLIGHT);
         sectionLabel.setFont (juce::FontOptions (11.0f, juce::Font::bold));

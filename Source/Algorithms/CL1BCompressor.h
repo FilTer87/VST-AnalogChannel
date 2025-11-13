@@ -72,7 +72,7 @@ public:
     {
         // Fixed parameters for AnalogChannel
         float ratio = 4.0f;  // slider1 (changed from 6.0f to 4.0f)
-        float attack_release_mode = 0.0f;  // slider5 = 0 (Fixed mode)
+        float ar_mode = 0.0f;  // slider5 = 0 (Fixed mode) - renamed to avoid hiding member
         float output_gain_dB = 0.0f;  // slider6
 
         // Normalize ratio from [2, 10] to [0, 1] for table lookup (line 671)
@@ -92,7 +92,7 @@ public:
         T11 = DB_TO_K(-30.0f + output_gain_dB);
 
         // attack_release_mode (Fixed = 0)
-        this->attack_release_mode = (int)attack_release_mode;
+        this->attack_release_mode = (int)ar_mode;
     }
 
     float process(float input)

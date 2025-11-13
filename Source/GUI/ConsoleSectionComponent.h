@@ -106,8 +106,8 @@ public:
     {
         auto bounds = getLocalBounds().toFloat();
 
-        // Background panel
-        g.setColour (AnalogChannelColors::PANEL_BG);
+        // Background panel with custom color (#6f684f)
+        g.setColour (juce::Colour (0xff6f684f));
         g.fillRoundedRectangle (bounds.reduced (2.0f), 4.0f);
 
         // Border

@@ -51,11 +51,11 @@ public:
         currentSampleRate = sampleRate;
 
         // Peak detection filter coefficients
-        b = -std::exp (-60.0 / currentSampleRate);
-        a = 1.0 + b;
+        b = static_cast<float>(-std::exp (-60.0 / currentSampleRate));
+        a = static_cast<float>(1.0 + b);
 
         // GR meter decay (1 second)
-        gr_meter_decay = std::exp (1.0 / (1.0 * currentSampleRate));
+        gr_meter_decay = static_cast<float>(std::exp (1.0 / (1.0 * currentSampleRate)));
     }
 
     //==============================================================================
@@ -75,8 +75,8 @@ public:
         ratio = 1.0f / ratioValue;
 
         // Attack/Release coefficients
-        attack = std::exp (threshDB / (attackMS * currentSampleRate / 1000.0f) / c);
-        release = std::exp (threshDB / (releaseMS * currentSampleRate / 1000.0f) / c);
+        attack = static_cast<float>(std::exp (threshDB / (attackMS * currentSampleRate / 1000.0f) / c));
+        release = static_cast<float>(std::exp (threshDB / (releaseMS * currentSampleRate / 1000.0f) / c));
 
         // No auto-makeup, no output gain
         volume = 1.0f;

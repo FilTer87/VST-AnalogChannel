@@ -203,6 +203,13 @@ void AnalogChannelAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer
     outStageInputRMSLeft = outStageInputRMSRight = 0.0f;
     outStageOutputRMSLeft = outStageOutputRMSRight = 0.0f;
 
+    // Read position parameters once per buffer (not per sample for efficiency)
+    auto filtersPostParam = parameters.getRawParameterValue ("filtersPost");
+    bool filtersPostOutStage = (filtersPostParam != nullptr && *filtersPostParam > 0.5f);
+
+    auto styleCompPreEQParam = parameters.getRawParameterValue ("styleCompPreEQ");
+    bool styleCompPreEQ = (styleCompPreEQParam != nullptr && *styleCompPreEQParam > 0.5f);
+
     for (int channel = 0; channel < numChannelsToProcess; ++channel)
     {
         auto* channelData = buffer.getWritePointer (channel);
@@ -231,26 +238,51 @@ void AnalogChannelAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer
 
             // Signal flow: 8 sections in series
             signal = preInput[channel].process (signal);
-            signal = filters[channel].process (signal);
+
+            // Filters position depends on filtersPost parameter (read once per buffer above)
+            if (!filtersPostOutStage)
+            {
+                signal = filters[channel].process (signal);  // Normal position (before dynamics)
+            }
+
             signal = controlComp[channel].process (signal);
+
+            // Style-Comp position depends on styleCompPreEQ parameter (read once per buffer above)
+            if (styleCompPreEQ)
+            {
+                signal = styleComp[channel].process (signal);  // Pre-EQ position (after ControlComp)
+            }
+
             signal = eq[channel].process (signal);
-            signal = styleComp[channel].process (signal);
+
+            if (!styleCompPreEQ)
+            {
+                signal = styleComp[channel].process (signal);  // Normal position (after EQ)
+            }
+
             signal = console[channel].process (signal);
 
-            // === OUTSTAGE GR DETECTION (accumulate RMS) ===
+            // === OUTSTAGE GR DETECTION (accumulate RMS before and after OutStage only) ===
             float outStageInput = signal;
             signal = outStage[channel].process (signal);
+            float outStageOutput = signal;  // Capture output BEFORE filters POST
 
-            // Accumulate squared values for RMS calculation
+            // Accumulate squared values for RMS calculation (OutStage only, independent of filters)
             if (channel == 0)
             {
                 outStageInputRMSLeft += outStageInput * outStageInput;
-                outStageOutputRMSLeft += signal * signal;
+                outStageOutputRMSLeft += outStageOutput * outStageOutput;
             }
             else
             {
                 outStageInputRMSRight += outStageInput * outStageInput;
-                outStageOutputRMSRight += signal * signal;
+                outStageOutputRMSRight += outStageOutput * outStageOutput;
+            }
+
+            // Apply filters AFTER OutStage if POST mode is active
+            if (filtersPostOutStage)
+            {
+                signal = filters[channel].process (signal);  // Post-OutStage position (after all processing)
             }
 
             signal = volume[channel].process (signal);
@@ -296,15 +328,9 @@ void AnalogChannelAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer
     float inputDB_L = juce::Decibels::gainToDecibels (inputRMS_L + 1e-10f);
     float outputDB_L = juce::Decibels::gainToDecibels (outputRMS_L + 1e-10f);
     float grDB_L = outputDB_L - inputDB_L;  // Negative if reducing
-    float target_L = (grDB_L < -0.2f) ? 1.0f : 0.0f;  // 1.0 = active, 0.0 = inactive
 
-    // Smooth with attack/release
-    if (target_L > outStageGRSmoothLeft)
-        outStageGRSmoothLeft += (target_L - outStageGRSmoothLeft) * (1.0f - outStageAttackCoeff);
-    else
-        outStageGRSmoothLeft += (target_L - outStageGRSmoothLeft) * (1.0f - outStageReleaseCoeff);
-
-    outStageGRActiveLeft.store (outStageGRSmoothLeft > 0.5f, std::memory_order_relaxed);
+    // Store GR value for meter (negative values = reduction)
+    outStageGRLeft.store (grDB_L, std::memory_order_relaxed);
 
     // Right channel (if stereo)
     if (numChannelsToProcess > 1)
@@ -314,14 +340,9 @@ void AnalogChannelAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer
         float inputDB_R = juce::Decibels::gainToDecibels (inputRMS_R + 1e-10f);
         float outputDB_R = juce::Decibels::gainToDecibels (outputRMS_R + 1e-10f);
         float grDB_R = outputDB_R - inputDB_R;
-        float target_R = (grDB_R < -0.2f) ? 1.0f : 0.0f;
 
-        if (target_R > outStageGRSmoothRight)
-            outStageGRSmoothRight += (target_R - outStageGRSmoothRight) * (1.0f - outStageAttackCoeff);
-        else
-            outStageGRSmoothRight += (target_R - outStageGRSmoothRight) * (1.0f - outStageReleaseCoeff);
-
-        outStageGRActiveRight.store (outStageGRSmoothRight > 0.5f, std::memory_order_relaxed);
+        // Store GR value for meter (negative values = reduction)
+        outStageGRRight.store (grDB_R, std::memory_order_relaxed);
     }
 }
 
@@ -473,9 +494,11 @@ void AnalogChannelAudioProcessor::updateAllSections()
             controlComp[ch].setThreshold (*ctrlCompThresh);
         if (ctrlCompAR != nullptr)
         {
+            // Parameter order: { "Normal", "Fast" }
+            // Index 0 (< 0.5) = Normal, Index 1 (>= 0.5) = Fast
             ControlCompSection::ARMode arMode = (*ctrlCompAR < 0.5f)
-                ? ControlCompSection::Fast
-                : ControlCompSection::Normal;
+                ? ControlCompSection::Normal
+                : ControlCompSection::Fast;
             controlComp[ch].setARMode (arMode);
         }
         if (ctrlCompBypass != nullptr)
@@ -617,18 +640,21 @@ juce::AudioProcessorValueTreeState::ParameterLayout AnalogChannelAudioProcessor:
     params.push_back (std::make_unique<juce::AudioParameterBool> (
         "filtersBypass", "Filters Bypass", false));
 
+    params.push_back (std::make_unique<juce::AudioParameterBool> (
+        "filtersPost", "Filters Post-OutStage", false));
+
     // ============================================================================
     // SECTION 3: Control-Comp
     // ============================================================================
     params.push_back (std::make_unique<juce::AudioParameterFloat> (
         "ctrlCompThresh", "Control-Comp Threshold",
         juce::NormalisableRange<float> (-30.0f, -0.1f, 0.1f),
-        -10.0f, "dB"));
+        -18.0f, "dB"));
 
     params.push_back (std::make_unique<juce::AudioParameterChoice> (
         "ctrlCompAR", "Control-Comp A/R",
-        juce::StringArray { "Fast", "Normal" },
-        1)); // Default: Normal
+        juce::StringArray { "Normal", "Fast" },
+        0)); // Default: Normal (index 0, button OFF)
 
     params.push_back (std::make_unique<juce::AudioParameterBool> (
         "ctrlCompBypass", "Control-Comp Bypass", false));
@@ -677,7 +703,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout AnalogChannelAudioProcessor:
     params.push_back (std::make_unique<juce::AudioParameterChoice> (
         "eqBell1Freq", "EQ Bell 1 Frequency",
         juce::StringArray { "50", "100", "200", "300", "400", "500", "700", "900", "1.4k", "2.4k", "3.5k", "5k", "7.5k", "10k", "13k" },
-        8)); // Default: 1.4kHz
+        10)); // Default: 3.5kHz
 
     params.push_back (std::make_unique<juce::AudioParameterInt> (
         "eqBell1Gain", "EQ Bell 1 Gain",
@@ -687,7 +713,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout AnalogChannelAudioProcessor:
     params.push_back (std::make_unique<juce::AudioParameterChoice> (
         "eqBell2Freq", "EQ Bell 2 Frequency",
         juce::StringArray { "50", "100", "200", "300", "400", "500", "700", "900", "1.4k", "2.4k", "3.5k", "5k", "7.5k", "10k", "13k" },
-        10)); // Default: 3.5kHz
+        4)); // Default: 400Hz
 
     params.push_back (std::make_unique<juce::AudioParameterInt> (
         "eqBell2Gain", "EQ Bell 2 Gain",
@@ -702,12 +728,12 @@ juce::AudioProcessorValueTreeState::ParameterLayout AnalogChannelAudioProcessor:
     params.push_back (std::make_unique<juce::AudioParameterChoice> (
         "styleCompAlgo", "Style-Comp Algorithm",
         juce::StringArray { "Warm", "Punch" },
-        0)); // Default: Warm
+        1)); // Default: Punch
 
     params.push_back (std::make_unique<juce::AudioParameterFloat> (
         "styleCompIn", "Style-Comp IN",
         juce::NormalisableRange<float> (-18.0f, 60.0f, 0.1f),
-        0.0f, "dB"));
+        -18.0f, "dB"));
 
     params.push_back (std::make_unique<juce::AudioParameterFloat> (
         "styleCompMakeup", "Style-Comp Makeup",
@@ -721,6 +747,9 @@ juce::AudioProcessorValueTreeState::ParameterLayout AnalogChannelAudioProcessor:
 
     params.push_back (std::make_unique<juce::AudioParameterBool> (
         "styleCompBypass", "Style-Comp Bypass", false));
+
+    params.push_back (std::make_unique<juce::AudioParameterBool> (
+        "styleCompPreEQ", "Style-Comp Pre-EQ", false));
 
     // ============================================================================
     // SECTION 6: Console
@@ -771,7 +800,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout AnalogChannelAudioProcessor:
     params.push_back (std::make_unique<juce::AudioParameterChoice> (
         "channelVariationMode", "Channel Variation Mode",
         juce::StringArray { "Off", "Stereo (L≠R)", "Mono (L=R)" },
-        0)); // Default: Off
+        1)); // Default: Stereo
 
     params.push_back (std::make_unique<juce::AudioParameterInt> (
         "channelPair", "Channel Pair",

@@ -15,6 +15,7 @@
 #include <JuceHeader.h>
 #include "Colors.h"
 #include "AnalogChannelLookAndFeel.h"
+#include "LEDMeterStrip.h"
 
 class OutStageSectionComponent : public juce::Component,
                                    private juce::Button::Listener,
@@ -23,7 +24,8 @@ class OutStageSectionComponent : public juce::Component,
 public:
     OutStageSectionComponent (juce::AudioProcessorValueTreeState& apvts)
         : apvtsRef (apvts),
-          driveLAF (juce::Colour (0xff1a1a1a))
+          driveLAF (juce::Colour (0xff1a1a1a)),
+          grMeter (8, LEDMeterStrip::OutStage)
     {
         driveKnob.setLookAndFeel (&driveLAF);
 
@@ -57,12 +59,8 @@ public:
         driveLabel.setColour (juce::Label::textColourId, AnalogChannelColors::TEXT_MAIN);
         addAndMakeVisible (driveLabel);
 
-        // GR indicator LED (simple label, color updated by parent)
-        grIndicator.setText ("GR", juce::dontSendNotification);
-        grIndicator.setJustificationType (juce::Justification::centred);
-        grIndicator.setColour (juce::Label::textColourId, AnalogChannelColors::TEXT_MAIN);
-        grIndicator.setColour (juce::Label::backgroundColourId, AnalogChannelColors::LED_OFF);
-        addAndMakeVisible (grIndicator);
+        // GR meter strip (no label)
+        addAndMakeVisible (grMeter);
 
         // Active/Inactive button (inverted bypass logic)
         activeButton.setButtonText ("ACTIVE");
@@ -110,8 +108,8 @@ public:
     {
         auto bounds = getLocalBounds().toFloat();
 
-        // Background panel
-        g.setColour (AnalogChannelColors::PANEL_BG);
+        // Background panel with custom color (#7a5353)
+        g.setColour (juce::Colour (0xff7a5353));
         g.fillRoundedRectangle (bounds.reduced (2.0f), 4.0f);
 
         // Border
@@ -147,19 +145,19 @@ public:
         // Drive knob
         driveLabel.setBounds (bounds.removeFromTop (15));
         driveKnob.setBounds (bounds.removeFromTop (80));
-        bounds.removeFromTop (10);
+        bounds.removeFromTop (6);  // Reduced spacing after drive knob
 
-        // GR indicator
-        grIndicator.setBounds (bounds.removeFromTop (30).reduced (20, 0));
-        bounds.removeFromTop (10);
+        // GR meter (no label, more space)
+        grMeter.setBounds (bounds.removeFromTop (45).reduced (5, 0));
+        bounds.removeFromTop (8);  // Reduced spacing after meter
 
         // Active button at bottom
         activeButton.setBounds (bounds.removeFromBottom (26));
     }
 
     //==============================================================================
-    // Accessors for parent to update GR indicator
-    juce::Label& getGRIndicatorLeft() { return grIndicator; }
+    // Accessor for parent to update GR meter
+    LEDMeterStrip& getGRMeter() { return grMeter; }
 
 private:
     //==============================================================================
@@ -175,7 +173,6 @@ private:
         algorithmCombo.setEnabled (isActive);
         driveKnob.setEnabled (isActive);
         driveLabel.setAlpha (isActive ? 1.0f : 0.4f);
-        grIndicator.setAlpha (isActive ? 1.0f : 0.4f);
         sectionLabel.setAlpha (isActive ? 1.0f : 0.4f);
 
         repaint();
@@ -208,7 +205,7 @@ private:
     juce::ComboBox algorithmCombo;
     juce::Slider driveKnob;
     juce::Label driveLabel;
-    juce::Label grIndicator;
+    LEDMeterStrip grMeter;
     juce::ToggleButton activeButton;
     juce::Label sectionLabel;
 

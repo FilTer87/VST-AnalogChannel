@@ -66,7 +66,7 @@ public:
             apvts, "preInputBypass", activeButton);
 
         // Section label
-        sectionLabel.setText ("PRE-INPUT", juce::dontSendNotification);
+        sectionLabel.setText ("SATURATION IN", juce::dontSendNotification);
         sectionLabel.setJustificationType (juce::Justification::centred);
         sectionLabel.setColour (juce::Label::textColourId, AnalogChannelColors::TEXT_HIGHLIGHT);
         sectionLabel.setFont (juce::FontOptions (11.0f, juce::Font::bold));
@@ -102,8 +102,8 @@ public:
     {
         auto bounds = getLocalBounds().toFloat();
 
-        // Background panel
-        g.setColour (AnalogChannelColors::PANEL_BG);
+        // Background panel with custom color (#7a5353)
+        g.setColour (juce::Colour (0xff7a5353));
         g.fillRoundedRectangle (bounds.reduced (2.0f), 4.0f);
 
         // Border

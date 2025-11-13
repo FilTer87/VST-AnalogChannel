@@ -155,7 +155,7 @@ private:
         if (discriminant >= 0.0)
         {
             // Real poles (overdamped)
-            double sqrtDisc = std::sqrt (discriminant);
+            // double sqrtDisc = std::sqrt (discriminant); // Not needed for current implementation
             poleReal = -alpha;
             poleImag = 0.0;
         }
@@ -209,7 +209,7 @@ private:
 
         // Use standard JUCE bilinear transform
         // This works correctly but has frequency cramping at high frequencies
-        return juce::dsp::IIR::Coefficients<float>::makeLowPass (sampleRate, frequency, Q);
+        return juce::dsp::IIR::Coefficients<float>::makeLowPass (sampleRate, static_cast<float>(frequency), static_cast<float>(Q));
     }
 
     void updateFilters()

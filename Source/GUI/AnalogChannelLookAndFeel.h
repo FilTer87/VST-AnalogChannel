@@ -444,9 +444,9 @@ public:
             g.fillPath (pointer, juce::AffineTransform::rotation (angle).translated (centre.x, centre.y));
         }
 
-        // Draw colored center dot
+        // Draw colored center dot (smaller for small knobs)
         {
-            auto dotRadius = 3.0f;  // Same size as standard knobs
+            auto dotRadius = 2.0f;  // Reduced size for small knobs (Mid Cut, Makeup, Mix)
             g.setColour (centerDotColor);
             g.fillEllipse (centre.x - dotRadius, centre.y - dotRadius, dotRadius * 2.0f, dotRadius * 2.0f);
 

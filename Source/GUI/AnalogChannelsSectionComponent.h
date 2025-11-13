@@ -30,7 +30,7 @@ public:
         addAndMakeVisible (sectionLabel);
         sectionLabel.setText ("CHANNEL VARIATION", juce::dontSendNotification);
         sectionLabel.setFont (juce::FontOptions (9.0f, juce::Font::bold));
-        sectionLabel.setColour (juce::Label::textColourId, AnalogChannelColors::TEXT_DIM);
+        sectionLabel.setColour (juce::Label::textColourId, AnalogChannelColors::TEXT_HIGHLIGHT);
         sectionLabel.setJustificationType (juce::Justification::centred);
 
         // Mode selector (Off / Stereo / Mono)
@@ -46,7 +46,7 @@ public:
         addAndMakeVisible (channelPrefixLabel);
         channelPrefixLabel.setText ("Channels:", juce::dontSendNotification);
         channelPrefixLabel.setFont (juce::FontOptions (9.0f));
-        channelPrefixLabel.setColour (juce::Label::textColourId, AnalogChannelColors::TEXT_DIM);
+        channelPrefixLabel.setColour (juce::Label::textColourId, AnalogChannelColors::TEXT_MAIN);
         channelPrefixLabel.setJustificationType (juce::Justification::centred);
 
         // Channel display (shows "1 | 2", "3 | 4", etc.) - centered
@@ -80,11 +80,11 @@ public:
 
         // Section title at top (like other sections)
         sectionLabel.setBounds (bounds.removeFromTop (12));
-        bounds.removeFromTop (2); // Small spacing
+        bounds.removeFromTop (8); // Increased spacing to move content down
 
         // Mode selector (same height as other ComboBoxes)
         modeSelector.setBounds (bounds.removeFromTop (24));
-        bounds.removeFromTop (6); // Spacing
+        bounds.removeFromTop (8); // Increased spacing
 
         // "Channels:" label above display
         channelPrefixLabel.setBounds (bounds.removeFromTop (12));
@@ -98,15 +98,15 @@ public:
         auto knobArea = bounds.removeFromTop (44);
         int knobSize = 44;
         int knobX = (knobArea.getWidth() - knobSize) / 2;
-        channelKnob.setBounds (knobX, knobArea.getY(), knobSize, knobSize);
+        channelKnob.setBounds (knobArea.getX() + knobX, knobArea.getY(), knobSize, knobSize);
     }
 
     void paint (juce::Graphics& g) override
     {
         auto bounds = getLocalBounds();
 
-        // Background
-        g.setColour (AnalogChannelColors::PANEL_BG);
+        // Background with custom color (#626161)
+        g.setColour (juce::Colour (0xff626161));
         g.fillRoundedRectangle (bounds.toFloat(), 4.0f);
 
         // Border

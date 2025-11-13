@@ -101,10 +101,8 @@ public:
     float getControlCompGRRight() const { return controlCompGRRight.load (std::memory_order_relaxed); }
     float getStyleCompGRLeft() const { return styleCompGRLeft.load (std::memory_order_relaxed); }
     float getStyleCompGRRight() const { return styleCompGRRight.load (std::memory_order_relaxed); }
-
-    // OutStage GR indicators (boolean, ON if reduction > 0.2dB)
-    bool getOutStageGRActiveLeft() const { return outStageGRActiveLeft.load (std::memory_order_relaxed); }
-    bool getOutStageGRActiveRight() const { return outStageGRActiveRight.load (std::memory_order_relaxed); }
+    float getOutStageGRLeft() const { return outStageGRLeft.load (std::memory_order_relaxed); }
+    float getOutStageGRRight() const { return outStageGRRight.load (std::memory_order_relaxed); }
 
 private:
     //==============================================================================
@@ -140,8 +138,8 @@ private:
     std::atomic<float> controlCompGRRight{0.0f};
     std::atomic<float> styleCompGRLeft{0.0f};
     std::atomic<float> styleCompGRRight{0.0f};
-    std::atomic<bool> outStageGRActiveLeft{false};
-    std::atomic<bool> outStageGRActiveRight{false};
+    std::atomic<float> outStageGRLeft{0.0f};
+    std::atomic<float> outStageGRRight{0.0f};
 
     // Processing thread state (not thread-safe, used only in processBlock)
     float inputPeakStateLeft = 0.0f;

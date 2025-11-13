@@ -90,6 +90,18 @@ public:
         // GR meter
         addAndMakeVisible (grMeter);
 
+        // Pre EQ button (small, left-aligned)
+        preEQButton.setButtonText ("");  // Empty, we draw custom in paintOverChildren
+        preEQButton.setClickingTogglesState (true);
+        preEQButton.addListener (this);
+        // Make button background transparent so we can draw custom style
+        preEQButton.setColour (juce::TextButton::buttonColourId, juce::Colours::transparentBlack);
+        preEQButton.setColour (juce::TextButton::buttonOnColourId, juce::Colours::transparentBlack);
+        addAndMakeVisible (preEQButton);
+
+        preEQAttachment = std::make_unique<juce::AudioProcessorValueTreeState::ButtonAttachment> (
+            apvts, "styleCompPreEQ", preEQButton);
+
         // Active/Inactive button (inverted bypass logic)
         activeButton.setButtonText ("ACTIVE");
         activeButton.setClickingTogglesState (true);
@@ -100,7 +112,7 @@ public:
             apvts, "styleCompBypass", activeButton);
 
         // Section label
-        sectionLabel.setText ("STYLE-COMP", juce::dontSendNotification);
+        sectionLabel.setText ("STYLE COMP.", juce::dontSendNotification);
         sectionLabel.setJustificationType (juce::Justification::centred);
         sectionLabel.setColour (juce::Label::textColourId, AnalogChannelColors::TEXT_HIGHLIGHT);
         sectionLabel.setFont (juce::FontOptions (11.0f, juce::Font::bold));
@@ -129,6 +141,10 @@ public:
         {
             updateBypassState();
         }
+        else if (button == &preEQButton)
+        {
+            repaint();  // Trigger repaint for color change
+        }
     }
 
     //==============================================================================
@@ -147,6 +163,32 @@ public:
 
     void paintOverChildren (juce::Graphics& g) override
     {
+        // Custom paint for Pre EQ button (yellow when active)
+        auto preEQBounds = preEQButton.getBounds().toFloat();
+        bool isPreEQActive = preEQButton.getToggleState();
+
+        if (isPreEQActive)
+        {
+            // Yellow background when active
+            g.setColour (juce::Colour (0xffFFD966).withAlpha (0.9f));  // Soft yellow
+            g.fillRoundedRectangle (preEQBounds, 2.0f);
+        }
+        else
+        {
+            // Gray background when inactive
+            g.setColour (juce::Colour (0xff4a4a4a));
+            g.fillRoundedRectangle (preEQBounds, 2.0f);
+        }
+
+        // Border
+        g.setColour (AnalogChannelColors::BORDER_DARK);
+        g.drawRoundedRectangle (preEQBounds, 2.0f, 1.0f);
+
+        // Label
+        g.setColour (isPreEQActive ? juce::Colour (0xff1a1a1a) : AnalogChannelColors::TEXT_MAIN);
+        g.setFont (juce::FontOptions (10.0f, juce::Font::plain));
+        g.drawText ("Pre EQ", preEQBounds, juce::Justification::centred);
+
         // Gray out entire section if bypassed
         bool isBypassed = activeButton.getToggleState();
 
@@ -172,7 +214,15 @@ public:
 
         // Comp IN knob (large)
         compInLabel.setBounds (bounds.removeFromTop (15));
-        compInKnob.setBounds (bounds.removeFromTop (80));
+        auto compInKnobArea = bounds.removeFromTop (80);
+        compInKnob.setBounds (compInKnobArea);
+
+        // Pre EQ button (small, same size as Post > button: 32x20px)
+        // Position it at the bottom-left of the knob area (where the dB value is shown)
+        auto preEQButtonX = compInKnobArea.getX();
+        auto preEQButtonY = compInKnobArea.getBottom() - 20;  // 20px height from bottom
+        preEQButton.setBounds (preEQButtonX, preEQButtonY, 32, 20);  // Exact size: 32x20px
+
         bounds.removeFromTop (8);
 
         // Makeup and Mix knobs (smaller, side by side)
@@ -220,6 +270,7 @@ private:
         compInKnob.setEnabled (isActive);
         makeupKnob.setEnabled (isActive);
         mixKnob.setEnabled (isActive);
+        preEQButton.setEnabled (isActive);
         compInLabel.setAlpha (isActive ? 1.0f : 0.4f);
         makeupLabel.setAlpha (isActive ? 1.0f : 0.4f);
         mixLabel.setAlpha (isActive ? 1.0f : 0.4f);
@@ -256,6 +307,7 @@ private:
     juce::Label makeupLabel;
     juce::Label mixLabel;
     LEDMeterStrip grMeter;
+    juce::ToggleButton preEQButton;
     juce::ToggleButton activeButton;
     juce::Label sectionLabel;
 
@@ -263,6 +315,7 @@ private:
     std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> compInAttachment;
     std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> makeupAttachment;
     std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> mixAttachment;
+    std::unique_ptr<juce::AudioProcessorValueTreeState::ButtonAttachment> preEQAttachment;
     std::unique_ptr<juce::AudioProcessorValueTreeState::ButtonAttachment> bypassAttachment;
 
     DynamicColoredKnobLookAndFeel compInLAF;

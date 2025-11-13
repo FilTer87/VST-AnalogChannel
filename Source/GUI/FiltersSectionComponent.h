@@ -86,6 +86,18 @@ public:
         lpfQAttachment = std::make_unique<juce::AudioProcessorValueTreeState::ButtonAttachment> (
             apvts, "lpfQ", lpfQButton);
 
+        // POST button (small, right-aligned)
+        postButton.setButtonText ("");  // Empty, we draw custom in paintOverChildren
+        postButton.setClickingTogglesState (true);
+        postButton.addListener (this);
+        // Make button background transparent so we can draw custom style
+        postButton.setColour (juce::TextButton::buttonColourId, juce::Colours::transparentBlack);
+        postButton.setColour (juce::TextButton::buttonOnColourId, juce::Colours::transparentBlack);
+        addAndMakeVisible (postButton);
+
+        postAttachment = std::make_unique<juce::AudioProcessorValueTreeState::ButtonAttachment> (
+            apvts, "filtersPost", postButton);
+
         // Active/Inactive button
         activeButton.setButtonText ("ACTIVE");
         activeButton.setClickingTogglesState (true);
@@ -123,6 +135,10 @@ public:
         {
             updateBypassState();
         }
+        else if (button == &postButton)
+        {
+            repaint();  // Trigger repaint for color change
+        }
     }
 
     //==============================================================================
@@ -130,8 +146,8 @@ public:
     {
         auto bounds = getLocalBounds().toFloat();
 
-        // Background panel
-        g.setColour (AnalogChannelColors::PANEL_BG);
+        // Background panel with custom color (#4c4c4c)
+        g.setColour (juce::Colour (0xff4c4c4c));
         g.fillRoundedRectangle (bounds.reduced (2.0f), 4.0f);
 
         // Border
@@ -141,6 +157,32 @@ public:
 
     void paintOverChildren (juce::Graphics& g) override
     {
+        // Custom paint for POST button (yellow when active)
+        auto postBounds = postButton.getBounds().toFloat();
+        bool isPostActive = postButton.getToggleState();
+
+        if (isPostActive)
+        {
+            // Yellow background when active
+            g.setColour (juce::Colour (0xffFFD966).withAlpha (0.9f));  // Soft yellow
+            g.fillRoundedRectangle (postBounds, 2.0f);
+        }
+        else
+        {
+            // Gray background when inactive
+            g.setColour (juce::Colour (0xff4a4a4a));
+            g.fillRoundedRectangle (postBounds, 2.0f);
+        }
+
+        // Border
+        g.setColour (AnalogChannelColors::BORDER_DARK);
+        g.drawRoundedRectangle (postBounds, 2.0f, 1.0f);
+
+        // Arrow symbol (using > instead of unicode arrow for better compatibility)
+        g.setColour (isPostActive ? juce::Colour (0xff1a1a1a) : AnalogChannelColors::TEXT_MAIN);
+        g.setFont (juce::FontOptions (10.0f, juce::Font::plain));
+        g.drawText ("Post >", postBounds, juce::Justification::centred);
+
         // Gray out entire section if bypassed
         bool isBypassed = activeButton.getToggleState();
 
@@ -184,6 +226,11 @@ public:
         lpfQButton.setBounds (lpfButtonsArea.removeFromLeft (45));  // Just enough for "Bump"
         bounds.removeFromTop (8);
 
+        // POST button (small, right-aligned above ACTIVE button)
+        auto postButtonArea = bounds.removeFromTop (20);  // Reduced height
+        postButton.setBounds (postButtonArea.removeFromRight (32).withTrimmedTop (0));  // Small width, right-aligned
+        bounds.removeFromTop (4);  // Small gap before ACTIVE button
+
         // Active button at bottom
         activeButton.setBounds (bounds.removeFromBottom (26));
     }
@@ -205,6 +252,7 @@ private:
         hpfQButton.setEnabled (isActive);
         lpfSlopeButton.setEnabled (isActive);
         lpfQButton.setEnabled (isActive);
+        postButton.setEnabled (isActive);
         hpfLabel.setAlpha (isActive ? 1.0f : 0.4f);
         lpfLabel.setAlpha (isActive ? 1.0f : 0.4f);
         sectionLabel.setAlpha (isActive ? 1.0f : 0.4f);
@@ -232,6 +280,7 @@ private:
     juce::Slider hpfKnob, lpfKnob;
     juce::ToggleButton hpfSlopeButton, hpfQButton;
     juce::ToggleButton lpfSlopeButton, lpfQButton;
+    juce::ToggleButton postButton;
     juce::ToggleButton activeButton;
     juce::Label sectionLabel;
 
@@ -241,6 +290,7 @@ private:
     std::unique_ptr<juce::AudioProcessorValueTreeState::ButtonAttachment> hpfQAttachment;
     std::unique_ptr<juce::AudioProcessorValueTreeState::ButtonAttachment> lpfSlopeAttachment;
     std::unique_ptr<juce::AudioProcessorValueTreeState::ButtonAttachment> lpfQAttachment;
+    std::unique_ptr<juce::AudioProcessorValueTreeState::ButtonAttachment> postAttachment;
     std::unique_ptr<juce::AudioProcessorValueTreeState::ButtonAttachment> bypassAttachment;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FiltersSectionComponent)

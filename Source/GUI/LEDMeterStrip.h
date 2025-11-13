@@ -16,13 +16,29 @@
 class LEDMeterStrip : public juce::Component
 {
 public:
-    LEDMeterStrip (int numLEDs = 8)
-        : numberOfLEDs (numLEDs)
+    enum MeterType
     {
-        // Linear scale: 1-8 dB (one threshold per LED)
+        Compressor,  // For Control-Comp and Style-Comp (1-8 dB, green: 1-2, yellow: 3-6, red: 7-8)
+        OutStage     // For OutStage (0.1-10 dB, green: 0.1, yellow: 0.5-5, red: 7-10)
+    };
+
+    LEDMeterStrip (int numLEDs = 8, MeterType type = Compressor)
+        : numberOfLEDs (numLEDs), meterType (type)
+    {
+        // Set thresholds based on meter type
         ledThresholds.clear();
-        for (int i = 0; i < numLEDs; ++i)
-            ledThresholds.push_back (static_cast<float> (i + 1));
+
+        if (meterType == OutStage)
+        {
+            // OutStage scale: 0.1, 0.5, 1, 2, 3, 5, 7, 10 dB
+            ledThresholds = { 0.1f, 0.5f, 1.0f, 2.0f, 3.0f, 5.0f, 7.0f, 10.0f };
+        }
+        else
+        {
+            // Compressor scale: 1-8 dB (linear)
+            for (int i = 0; i < numLEDs; ++i)
+                ledThresholds.push_back (static_cast<float> (i + 1));
+        }
     }
 
     //==============================================================================
@@ -41,14 +57,28 @@ public:
             // Determine if this LED should be lit based on current value
             bool isLit = (reductionDB >= ledThresholds[i]);
 
-            // Determine LED color based on threshold
+            // Determine LED color based on meter type and threshold
             juce::Colour ledColor;
-            if (ledThresholds[i] < 3.0f)
-                ledColor = AnalogChannelColors::LED_GREEN;
-            else if (ledThresholds[i] < 8.0f)
-                ledColor = AnalogChannelColors::LED_YELLOW;
+            if (meterType == OutStage)
+            {
+                // OutStage colors: green: 0.1, yellow: 0.5-5, red: 7-10
+                if (ledThresholds[i] <= 0.1f)
+                    ledColor = AnalogChannelColors::LED_GREEN;
+                else if (ledThresholds[i] <= 5.0f)
+                    ledColor = AnalogChannelColors::LED_YELLOW;
+                else
+                    ledColor = AnalogChannelColors::LED_RED;
+            }
             else
-                ledColor = AnalogChannelColors::LED_RED;
+            {
+                // Compressor colors: green: 1-2, yellow: 3-6, red: 7-8
+                if (ledThresholds[i] <= 2.0f)
+                    ledColor = AnalogChannelColors::LED_GREEN;
+                else if (ledThresholds[i] <= 6.0f)
+                    ledColor = AnalogChannelColors::LED_YELLOW;
+                else
+                    ledColor = AnalogChannelColors::LED_RED;
+            }
 
             // Draw LED as circle
             if (isLit)
@@ -72,12 +102,22 @@ public:
             }
         }
 
-        // Draw dB scale labels below LEDs (show 1, 3, 5, 8)
+        // Draw dB scale labels below LEDs
         g.setColour (AnalogChannelColors::TEXT_DIM);
         g.setFont (juce::FontOptions (7.0f));
 
-        // Show labels for: 1, 3, 5, 8 dB (indices 0, 2, 4, 7)
-        std::vector<int> labelIndices = { 0, 2, 4, 7 };
+        // Select which LEDs to label based on meter type
+        std::vector<int> labelIndices;
+        if (meterType == OutStage)
+        {
+            // OutStage: show 0.1, 1, 3, 7 (indices 0, 2, 4, 6)
+            labelIndices = { 0, 2, 4, 6 };
+        }
+        else
+        {
+            // Compressor: show 1, 3, 5, 8 (indices 0, 2, 4, 7)
+            labelIndices = { 0, 2, 4, 7 };
+        }
 
         for (int idx : labelIndices)
         {
@@ -86,8 +126,15 @@ public:
                 float x = spacing + idx * (ledDiameter + spacing);
                 auto labelBounds = juce::Rectangle<float> (x - ledDiameter, bounds.getHeight() - 10.0f,
                                                             ledDiameter * 3, 10.0f);
-                g.drawText (juce::String (static_cast<int> (ledThresholds[idx])),
-                           labelBounds, juce::Justification::centred);
+
+                // Format label based on value (show decimal for < 1.0)
+                juce::String label;
+                if (ledThresholds[idx] < 1.0f)
+                    label = juce::String (ledThresholds[idx], 1);  // Show 1 decimal: "0.1", "0.5"
+                else
+                    label = juce::String (static_cast<int> (ledThresholds[idx]));  // Show integer: "1", "3", "7"
+
+                g.drawText (label, labelBounds, juce::Justification::centred);
             }
         }
     }
@@ -116,6 +163,7 @@ public:
 private:
     //==============================================================================
     int numberOfLEDs = 8;
+    MeterType meterType;
     std::vector<float> ledThresholds;
     float reductionDB = 0.0f; // Absolute value in dB
 

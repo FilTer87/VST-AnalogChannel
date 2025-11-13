@@ -151,17 +151,17 @@ void AnalogChannelAudioProcessorEditor::resized()
     auto col5 = mainArea.removeFromLeft (colWidth);
     int totalHeight = col5.getHeight();
 
-    // OutStage: 35% of column height
-    int outStageHeight = static_cast<int> (totalHeight * 0.35f);
+    // OutStage: 47% of column height
+    int outStageHeight = static_cast<int> (totalHeight * 0.50f);
     outStageSection.setBounds (col5.removeFromTop (outStageHeight));
     col5.removeFromTop (4);  // Spacing
 
-    // AnalogChannels: 35% of column height
-    int analogChannelsHeight = static_cast<int> (totalHeight * 0.35f);
+    // AnalogChannels: 30% of column height
+    int analogChannelsHeight = static_cast<int> (totalHeight * 0.30f);
     analogChannelsSection.setBounds (col5.removeFromTop (analogChannelsHeight));
     col5.removeFromTop (4);  // Spacing
 
-    // Volume: remaining space (smaller section)
+    // Volume: 23% of column height
     volumeSection.setBounds (col5);
 }
 
@@ -176,9 +176,5 @@ void AnalogChannelAudioProcessorEditor::timerCallback()
     // Update GR meters in section components
     controlCompSection.getGRMeter().setValue (std::abs (audioProcessor.getControlCompGRLeft()));
     styleCompSection.getGRMeter().setValue (std::abs (audioProcessor.getStyleCompGRLeft()));
-
-    // Update OutStage GR indicator
-    bool outStageActiveL = audioProcessor.getOutStageGRActiveLeft();
-    outStageSection.getGRIndicatorLeft().setColour (juce::Label::backgroundColourId,
-                                                     outStageActiveL ? AnalogChannelColors::LED_GREEN : AnalogChannelColors::LED_OFF);
+    outStageSection.getGRMeter().setValue (std::abs (audioProcessor.getOutStageGRLeft()));
 }
