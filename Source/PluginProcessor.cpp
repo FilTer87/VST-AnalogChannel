@@ -125,6 +125,7 @@ void AnalogChannelAudioProcessor::prepareToPlay (double sampleRate, int samplesP
         preInput[ch].setSampleRate (sampleRate);
         filters[ch].setSampleRate (sampleRate);
         controlComp[ch].setSampleRate (sampleRate);
+        lowDynamic[ch].setSampleRate (sampleRate);
         eq[ch].setSampleRate (sampleRate);
         styleComp[ch].setSampleRate (sampleRate);
         console[ch].setSampleRate (sampleRate);
@@ -246,6 +247,7 @@ void AnalogChannelAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer
             }
 
             signal = controlComp[channel].process (signal);
+            signal = lowDynamic[channel].process (signal);
 
             // Style-Comp position depends on styleCompPreEQ parameter (read once per buffer above)
             if (styleCompPreEQ)
@@ -504,6 +506,25 @@ void AnalogChannelAudioProcessor::updateAllSections()
         if (ctrlCompBypass != nullptr)
             controlComp[ch].setBypass (*ctrlCompBypass > 0.5f);
 
+        // Section 3.5: Low Dynamic
+        auto lowDynThresh = parameters.getRawParameterValue ("lowDynThresh");
+        auto lowDynRatio = parameters.getRawParameterValue ("lowDynRatio");
+        auto lowDynFast = parameters.getRawParameterValue ("lowDynFast");
+        auto lowDynBypass = parameters.getRawParameterValue ("lowDynBypass");
+
+        if (lowDynThresh != nullptr)
+            lowDynamic[ch].setThreshold (*lowDynThresh);
+        if (lowDynRatio != nullptr)
+            lowDynamic[ch].setRatio (*lowDynRatio);
+        if (lowDynFast != nullptr)
+            lowDynamic[ch].setFastMode (*lowDynFast > 0.5f);
+        if (lowDynBypass != nullptr)
+        {
+            // CRITICAL: Bypass parameter is 1.0 when button is ON (bypassed)
+            bool shouldBypass = (*lowDynBypass > 0.5f);
+            lowDynamic[ch].setBypass (shouldBypass);
+        }
+
         // Section 4: EQ
         auto eqBass = parameters.getRawParameterValue ("eqBass");
         auto eqBassFreq = parameters.getRawParameterValue ("eqBassFreq");
@@ -660,6 +681,25 @@ juce::AudioProcessorValueTreeState::ParameterLayout AnalogChannelAudioProcessor:
         "ctrlCompBypass", "Control-Comp Bypass", false));
 
     // ============================================================================
+    // SECTION 3.5: Low Dynamic (Expander/Upward Compressor)
+    // ============================================================================
+    params.push_back (std::make_unique<juce::AudioParameterFloat> (
+        "lowDynThresh", "Low Dynamic Threshold",
+        juce::NormalisableRange<float> (-40.0f, -3.0f, 0.1f),
+        -20.0f, "dB"));
+
+    params.push_back (std::make_unique<juce::AudioParameterFloat> (
+        "lowDynRatio", "Low Dynamic Ratio",
+        juce::NormalisableRange<float> (-10.0f, 10.0f, 0.1f),
+        0.0f));  // Default: 0 (bypass)
+
+    params.push_back (std::make_unique<juce::AudioParameterBool> (
+        "lowDynFast", "Low Dynamic Fast Mode", false));  // Default: Normal (OFF)
+
+    params.push_back (std::make_unique<juce::AudioParameterBool> (
+        "lowDynBypass", "Low Dynamic Bypass", false));
+
+    // ============================================================================
     // SECTION 4: EQ
     // ============================================================================
     params.push_back (std::make_unique<juce::AudioParameterFloat> (
@@ -806,6 +846,14 @@ juce::AudioProcessorValueTreeState::ParameterLayout AnalogChannelAudioProcessor:
         "channelPair", "Channel Pair",
         0, 23, // 0-23 = channels 1-48 (pairs: 1|2, 3|4, ..., 47|48)
         0)); // Default: pair 0 (channels 1|2)
+
+    // ============================================================================
+    // GUI: Zoom Preference
+    // ============================================================================
+    params.push_back (std::make_unique<juce::AudioParameterChoice> (
+        "guiZoom", "GUI Zoom",
+        juce::StringArray { "75%", "100%", "125%", "150%" },
+        1)); // Default: 100%
 
     return { params.begin(), params.end() };
 }

@@ -74,31 +74,52 @@ public:
     */
     float process (float input)
     {
-        // If fully bypassed and crossfade is complete, skip processing entirely
-        if (targetBypass && bypassMix >= 0.9999f)
+        // CRITICAL: If bypassed, return input immediately (no processing)
+        if (targetBypass)
         {
-            return input;
+            // Reset state immediately when bypass is activated
+            if (bypassMix == 0.0f)
+            {
+                reset();  // Reset on first bypass call
+            }
+
+            // Smooth fade to bypass to avoid clicks
+            if (bypassMix < 0.99f)
+            {
+                bypassMix += (1.0f - bypassMix) * fadeCoeff;
+                if (bypassMix > 0.99f)
+                {
+                    bypassMix = 1.0f;
+                }
+
+                // During fade: NO PROCESSING, just crossfade dry signal
+                // This prevents processing from affecting the signal during bypass
+                return input;
+            }
+            else
+            {
+                // Fully bypassed: skip processing entirely (no processInternal call)
+                return input;
+            }
         }
-
-        // Process wet signal
-        float wet = processInternal (input);
-
-        // Smooth crossfade between wet and dry
-        float targetMix = targetBypass ? 1.0f : 0.0f;
-
-        if (bypassMix != targetMix)
+        else
         {
-            bypassMix += (targetMix - bypassMix) * fadeCoeff;
+            // Fade back to processing
+            if (bypassMix > 0.01f)
+            {
+                bypassMix += (0.0f - bypassMix) * fadeCoeff;
+                if (bypassMix < 0.01f) bypassMix = 0.0f;
 
-            // Snap to target when very close to avoid denormals
-            if (juce::approximatelyEqual (bypassMix, targetMix))
-                bypassMix = targetMix;
+                // During fade: mix wet and dry
+                float wet = processInternal (input);
+                return wet * (1.0f - bypassMix) + input * bypassMix;
+            }
+            else
+            {
+                // Fully active: process normally
+                return processInternal (input);
+            }
         }
-
-        // Mix wet and dry signals
-        // bypassMix = 0.0: fully wet (processing)
-        // bypassMix = 1.0: fully dry (bypassed)
-        return wet * (1.0f - bypassMix) + input * bypassMix;
     }
 
 protected:

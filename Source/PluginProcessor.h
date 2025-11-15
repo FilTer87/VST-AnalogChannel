@@ -33,6 +33,7 @@
 #include "Sections/PreInputSection.h"
 #include "Sections/FilterSection.h"
 #include "Sections/ControlCompSection.h"
+#include "Sections/LowDynamicSection.h"
 #include "Sections/EQSection.h"
 #include "Sections/StyleCompSection.h"
 #include "Sections/ConsoleSection.h"
@@ -120,6 +121,7 @@ private:
     PreInputSection preInput[2];
     FilterSection filters[2];
     ControlCompSection controlComp[2];
+    LowDynamicSection lowDynamic[2];
     EQSection eq[2];
     StyleCompSection styleComp[2];
     ConsoleSection console[2];

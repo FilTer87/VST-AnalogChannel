@@ -32,6 +32,7 @@
 #include "GUI/PreInputSectionComponent.h"
 #include "GUI/FiltersSectionComponent.h"
 #include "GUI/ControlCompSectionComponent.h"
+#include "GUI/LowDynamicSectionComponent.h"
 #include "GUI/EQSectionComponent.h"
 #include "GUI/StyleCompSectionComponent.h"
 #include "GUI/OutStageSectionComponent.h"
@@ -60,6 +61,12 @@ private:
     // Timer callback for updating meters
     void timerCallback() override;
 
+    // Menu button callback
+    void showOptionsMenu();
+
+    // Apply zoom scale to plugin window
+    void applyZoomScale (float scale);
+
     //==============================================================================
     // Processor reference
     AnalogChannelAudioProcessor& audioProcessor;
@@ -75,12 +82,19 @@ private:
     PreInputSectionComponent preInputSection;
     FiltersSectionComponent filtersSection;
     ControlCompSectionComponent controlCompSection;
+    LowDynamicSectionComponent lowDynamicSection;
     EQSectionComponent eqSection;
     StyleCompSectionComponent styleCompSection;
     ConsoleSectionComponent consoleSection;
     OutStageSectionComponent outStageSection;
     AnalogChannelsSectionComponent analogChannelsSection;
     VolumeSectionComponent volumeSection;
+
+    // Menu button in header
+    juce::TextButton menuButton;
+
+    // Current zoom scale (0.75, 1.0, 1.25, 1.5)
+    float currentZoomScale = 1.0f;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AnalogChannelAudioProcessorEditor)
 };

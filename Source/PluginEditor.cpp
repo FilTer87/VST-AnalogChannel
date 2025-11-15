@@ -32,6 +32,7 @@ AnalogChannelAudioProcessorEditor::AnalogChannelAudioProcessorEditor (AnalogChan
       preInputSection (p.getValueTreeState()),
       filtersSection (p.getValueTreeState()),
       controlCompSection (p.getValueTreeState()),
+      lowDynamicSection (p.getValueTreeState()),
       eqSection (p.getValueTreeState()),
       styleCompSection (p.getValueTreeState()),
       consoleSection (p.getValueTreeState()),
@@ -52,6 +53,7 @@ AnalogChannelAudioProcessorEditor::AnalogChannelAudioProcessorEditor (AnalogChan
     addAndMakeVisible (preInputSection);
     addAndMakeVisible (filtersSection);
     addAndMakeVisible (controlCompSection);
+    addAndMakeVisible (lowDynamicSection);
     addAndMakeVisible (eqSection);
     addAndMakeVisible (styleCompSection);
     addAndMakeVisible (consoleSection);
@@ -59,8 +61,24 @@ AnalogChannelAudioProcessorEditor::AnalogChannelAudioProcessorEditor (AnalogChan
     addAndMakeVisible (analogChannelsSection);
     addAndMakeVisible (volumeSection);
 
-    // Set editor size (optimized for content + reduced spacing)
-    setSize (710, 580);
+    // Setup menu button (☰ icon in header)
+    menuButton.setButtonText (juce::CharPointer_UTF8 ("\xe2\x98\xb0"));  // UTF-8 for ☰
+    menuButton.onClick = [this] { showOptionsMenu(); };
+    addAndMakeVisible (menuButton);
+
+    // Load saved zoom preference
+    auto* zoomParam = audioProcessor.getValueTreeState().getParameter ("guiZoom");
+    if (zoomParam != nullptr)
+    {
+        int zoomIndex = static_cast<int> (zoomParam->getValue() * 3.0f);  // 0-3 index
+        const float zoomScales[] = { 0.75f, 1.0f, 1.25f, 1.5f };
+        applyZoomScale (zoomScales[zoomIndex]);
+    }
+    else
+    {
+        // Default size if parameter not found
+        setSize (710, 580);
+    }
 
     // Start timer for meter updates (30 Hz)
     startTimerHz (30);
@@ -102,8 +120,9 @@ void AnalogChannelAudioProcessorEditor::resized()
     bounds.removeFromTop (4);     // Top padding
     bounds.removeFromBottom (4);  // Bottom padding
 
-    // Title bar (30px)
-    bounds.removeFromTop (30);
+    // Title bar (30px) - position menu button here
+    auto titleBar = bounds.removeFromTop (30);
+    menuButton.setBounds (titleBar.removeFromRight (30).reduced (6));  // Small square button, right-aligned
 
     // Main area
     auto mainArea = bounds;
@@ -129,9 +148,11 @@ void AnalogChannelAudioProcessorEditor::resized()
     filtersSection.setBounds (col1);
     mainArea.removeFromLeft (spacing);
 
-    // Column 2: ControlComp (full height)
+    // Column 2: ControlComp (top 50%) + LowDynamic (bottom 50%)
     auto col2 = mainArea.removeFromLeft (colWidth);
-    controlCompSection.setBounds (col2);
+    controlCompSection.setBounds (col2.removeFromTop (col2.getHeight() / 2 - 2));
+    col2.removeFromTop (4);  // Spacing
+    lowDynamicSection.setBounds (col2);
     mainArea.removeFromLeft (spacing);
 
     // Column 3: EQ (full height)
@@ -177,4 +198,109 @@ void AnalogChannelAudioProcessorEditor::timerCallback()
     controlCompSection.getGRMeter().setValue (std::abs (audioProcessor.getControlCompGRLeft()));
     styleCompSection.getGRMeter().setValue (std::abs (audioProcessor.getStyleCompGRLeft()));
     outStageSection.getGRMeter().setValue (std::abs (audioProcessor.getOutStageGRLeft()));
+}
+
+void AnalogChannelAudioProcessorEditor::showOptionsMenu()
+{
+    juce::PopupMenu menu;
+
+    // User Manual
+    menu.addItem (1, "User Manual", true);
+
+    // About / Credits
+    menu.addItem (2, "About / Credits", true);
+
+    menu.addSeparator();
+
+    // Plugin Size submenu
+    juce::PopupMenu sizeMenu;
+    sizeMenu.addItem (10, "75%", true, currentZoomScale == 0.75f);
+    sizeMenu.addItem (11, "100%", true, currentZoomScale == 1.0f);
+    sizeMenu.addItem (12, "125%", true, currentZoomScale == 1.25f);
+    sizeMenu.addItem (13, "150%", true, currentZoomScale == 1.5f);
+
+    menu.addSubMenu ("Plugin Size", sizeMenu);
+
+    // Show menu
+    menu.showMenuAsync (juce::PopupMenu::Options(),
+                        [this] (int result)
+                        {
+                            switch (result)
+                            {
+                                case 1:  // User Manual
+                                    juce::URL ("https://github.com/yourusername/AnalogChannel").launchInDefaultBrowser();
+                                    break;
+
+                                case 2:  // About / Credits
+                                {
+                                    juce::AlertWindow::showMessageBoxAsync (
+                                        juce::AlertWindow::InfoIcon,
+                                        "About AnalogChannel",
+                                        "AnalogChannel v1.0\n\n"
+                                        "VST3 Channel Strip Plugin\n"
+                                        "Copyright (c) 2025 KuramaSound\n\n"
+                                        "Algorithms from AirWindows (MIT License)\n"
+                                        "Built with JUCE Framework\n\n"
+                                        "GPL v3 License",
+                                        "OK");
+                                    break;
+                                }
+
+                                case 10:  // 75%
+                                    applyZoomScale (0.75f);
+                                    break;
+
+                                case 11:  // 100%
+                                    applyZoomScale (1.0f);
+                                    break;
+
+                                case 12:  // 125%
+                                    applyZoomScale (1.25f);
+                                    break;
+
+                                case 13:  // 150%
+                                    applyZoomScale (1.5f);
+                                    break;
+
+                                default:
+                                    break;
+                            }
+                        });
+}
+
+void AnalogChannelAudioProcessorEditor::applyZoomScale (float scale)
+{
+    currentZoomScale = scale;
+
+    // Base size is 710x580
+    const int baseWidth = 710;
+    const int baseHeight = 580;
+
+    // IMPORTANT: We use setScaleFactor() which handles both:
+    // 1. Scaling the component hierarchy
+    // 2. Adjusting the window size automatically
+    // This replaces the manual setTransform() + setSize() approach
+
+    // First, reset any previous transform
+    setTransform (juce::AffineTransform());
+
+    // Set the base size (unscaled)
+    setSize (baseWidth, baseHeight);
+
+    // Apply the scale factor (JUCE handles everything)
+    setScaleFactor (scale);
+
+    // Save zoom preference to ValueTreeState
+    auto* zoomParam = audioProcessor.getValueTreeState().getParameter ("guiZoom");
+    if (zoomParam != nullptr)
+    {
+        // Map scale to parameter index (0-3)
+        int zoomIndex = 1;  // Default: 100%
+        if (scale <= 0.75f) zoomIndex = 0;       // 75%
+        else if (scale <= 1.0f) zoomIndex = 1;   // 100%
+        else if (scale <= 1.25f) zoomIndex = 2;  // 125%
+        else zoomIndex = 3;                      // 150%
+
+        zoomParam->setValueNotifyingHost (zoomIndex / 3.0f);  // Normalize to 0-1
+    }
 }
