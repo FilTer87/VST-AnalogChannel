@@ -7,6 +7,71 @@
               version="0.4">
   <MAINGROUP id="V9J31M" name="AnalogChannel">
     <GROUP id="{0492BA0B-A712-A6CE-6D1C-7E503B217B54}" name="Source">
+      <GROUP id="{EE3BC7E5-7AB5-6AEE-F5EA-B789385DB554}" name="Algorithms">
+        <FILE id="JLvIxk" name="Baxandall2.h" compile="0" resource="0" file="Source/Algorithms/Baxandall2.h"/>
+        <FILE id="P2ICJt" name="BellFilter.h" compile="0" resource="0" file="Source/Algorithms/BellFilter.h"/>
+        <FILE id="zJGftL" name="Channel8Console.h" compile="0" resource="0"
+              file="Source/Algorithms/Channel8Console.h"/>
+        <FILE id="lksun5" name="CL1BCompressor.h" compile="0" resource="0"
+              file="Source/Algorithms/CL1BCompressor.h"/>
+        <FILE id="YZYHwp" name="ClipSoftly.h" compile="0" resource="0" file="Source/Algorithms/ClipSoftly.h"/>
+        <FILE id="Vh9tMP" name="DigitalVersatileCompressor.h" compile="0" resource="0"
+              file="Source/Algorithms/DigitalVersatileCompressor.h"/>
+        <FILE id="J8e3YB" name="FinalClip.h" compile="0" resource="0" file="Source/Algorithms/FinalClip.h"/>
+        <FILE id="Nins45" name="PurestConsole3Channel.h" compile="0" resource="0"
+              file="Source/Algorithms/PurestConsole3Channel.h"/>
+        <FILE id="g5mqqH" name="PurestDrive.h" compile="0" resource="0" file="Source/Algorithms/PurestDrive.h"/>
+        <FILE id="bO2aXA" name="ToTape8.h" compile="0" resource="0" file="Source/Algorithms/ToTape8.h"/>
+        <FILE id="hIWcxo" name="Tube2.h" compile="0" resource="0" file="Source/Algorithms/Tube2.h"/>
+      </GROUP>
+      <GROUP id="{C0D9DE04-5888-814F-C166-D9F2654BDDEA}" name="GUI">
+        <FILE id="IbIlm8" name="AnalogChannelLookAndFeel.h" compile="0" resource="0"
+              file="Source/GUI/AnalogChannelLookAndFeel.h"/>
+        <FILE id="xJMikg" name="AnalogChannelsSectionComponent.h" compile="0"
+              resource="0" file="Source/GUI/AnalogChannelsSectionComponent.h"/>
+        <FILE id="mANdA7" name="Colors.h" compile="0" resource="0" file="Source/GUI/Colors.h"/>
+        <FILE id="mqOMja" name="ConsoleSectionComponent.h" compile="0" resource="0"
+              file="Source/GUI/ConsoleSectionComponent.h"/>
+        <FILE id="NeS8ah" name="ConsoleVolumeBarComponent.h" compile="0" resource="0"
+              file="Source/GUI/ConsoleVolumeBarComponent.h"/>
+        <FILE id="EejvPn" name="ControlCompSectionComponent.h" compile="0"
+              resource="0" file="Source/GUI/ControlCompSectionComponent.h"/>
+        <FILE id="FJqBh6" name="EQSectionComponent.h" compile="0" resource="0"
+              file="Source/GUI/EQSectionComponent.h"/>
+        <FILE id="cWUR5f" name="FiltersSectionComponent.h" compile="0" resource="0"
+              file="Source/GUI/FiltersSectionComponent.h"/>
+        <FILE id="YK29pE" name="LEDMeterStrip.h" compile="0" resource="0" file="Source/GUI/LEDMeterStrip.h"/>
+        <FILE id="BL4H07" name="LowDynamicSectionComponent.h" compile="0" resource="0"
+              file="Source/GUI/LowDynamicSectionComponent.h"/>
+        <FILE id="CCUKAq" name="OutStageSectionComponent.h" compile="0" resource="0"
+              file="Source/GUI/OutStageSectionComponent.h"/>
+        <FILE id="QOzQQ2" name="PeakMeter.h" compile="0" resource="0" file="Source/GUI/PeakMeter.h"/>
+        <FILE id="yxayW3" name="PreInputSectionComponent.h" compile="0" resource="0"
+              file="Source/GUI/PreInputSectionComponent.h"/>
+        <FILE id="dE5k6t" name="StyleCompSectionComponent.h" compile="0" resource="0"
+              file="Source/GUI/StyleCompSectionComponent.h"/>
+        <FILE id="QFBs2r" name="VolumeSectionComponent.h" compile="0" resource="0"
+              file="Source/GUI/VolumeSectionComponent.h"/>
+      </GROUP>
+      <GROUP id="{EFACD426-7FA8-8C13-961B-987E96F5685D}" name="Sections">
+        <FILE id="SXVy70" name="BypassableSection.h" compile="0" resource="0"
+              file="Source/Sections/BypassableSection.h"/>
+        <FILE id="ZMqMkI" name="ConsoleSection.h" compile="0" resource="0"
+              file="Source/Sections/ConsoleSection.h"/>
+        <FILE id="gyL6bJ" name="ControlCompSection.h" compile="0" resource="0"
+              file="Source/Sections/ControlCompSection.h"/>
+        <FILE id="bboL7t" name="EQSection.h" compile="0" resource="0" file="Source/Sections/EQSection.h"/>
+        <FILE id="hLRoS6" name="FilterSection.h" compile="0" resource="0" file="Source/Sections/FilterSection.h"/>
+        <FILE id="q9IAD3" name="LowDynamicSection.h" compile="0" resource="0"
+              file="Source/Sections/LowDynamicSection.h"/>
+        <FILE id="bBezOa" name="OutStageSection.h" compile="0" resource="0"
+              file="Source/Sections/OutStageSection.h"/>
+        <FILE id="WFpe6S" name="PreInputSection.h" compile="0" resource="0"
+              file="Source/Sections/PreInputSection.h"/>
+        <FILE id="ixFdW2" name="StyleCompSection.h" compile="0" resource="0"
+              file="Source/Sections/StyleCompSection.h"/>
+        <FILE id="oLes0D" name="VolumeSection.h" compile="0" resource="0" file="Source/Sections/VolumeSection.h"/>
+      </GROUP>
       <FILE id="jledYE" name="PluginProcessor.cpp" compile="1" resource="0"
             file="Source/PluginProcessor.cpp"/>
       <FILE id="uFoVkJ" name="PluginProcessor.h" compile="0" resource="0"

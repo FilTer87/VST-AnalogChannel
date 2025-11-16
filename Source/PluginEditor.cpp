@@ -66,18 +66,22 @@ AnalogChannelAudioProcessorEditor::AnalogChannelAudioProcessorEditor (AnalogChan
     menuButton.onClick = [this] { showOptionsMenu(); };
     addAndMakeVisible (menuButton);
 
-    // Load saved zoom preference
-    auto* zoomParam = audioProcessor.getValueTreeState().getParameter ("guiZoom");
+    // Load saved zoom preference and register listener
+    audioProcessor.getValueTreeState().addParameterListener ("guiZoom", this);
+
+    auto* zoomParam = dynamic_cast<juce::AudioParameterChoice*> (
+        audioProcessor.getValueTreeState().getParameter ("guiZoom"));
+
     if (zoomParam != nullptr)
     {
-        int zoomIndex = static_cast<int> (zoomParam->getValue() * 3.0f);  // 0-3 index
+        int zoomIndex = zoomParam->getIndex();  // Get choice index directly (0-3)
         const float zoomScales[] = { 0.75f, 1.0f, 1.25f, 1.5f };
         applyZoomScale (zoomScales[zoomIndex]);
     }
     else
     {
-        // Default size if parameter not found
-        setSize (710, 580);
+        // Default size if parameter not found (fallback to 125%)
+        applyZoomScale (1.25f);
     }
 
     // Start timer for meter updates (30 Hz)
@@ -86,6 +90,7 @@ AnalogChannelAudioProcessorEditor::AnalogChannelAudioProcessorEditor (AnalogChan
 
 AnalogChannelAudioProcessorEditor::~AnalogChannelAudioProcessorEditor()
 {
+    audioProcessor.getValueTreeState().removeParameterListener ("guiZoom", this);
     stopTimer();
     setLookAndFeel (nullptr);
 }
@@ -97,17 +102,29 @@ void AnalogChannelAudioProcessorEditor::paint (juce::Graphics& g)
     g.fillAll (AnalogChannelColors::BG_DARK);
 
     // Title bar area
-    auto titleArea = getLocalBounds().removeFromTop (30);
+    auto titleArea = getLocalBounds().removeFromTop (28);
     g.setColour (AnalogChannelColors::PANEL_BG);
     g.fillRect (titleArea);
 
+    // Draw title with two styles: "AnalogChannel" (bold) + " | KuramaSound" (normal)
+    auto titleTextArea = titleArea.reduced (8, 0);
+    int xPos = titleTextArea.getX();
+    int yCenter = titleArea.getCentreY();
+
+    // First part: "AnalogChannel " (bold)
     g.setColour (AnalogChannelColors::TEXT_HIGHLIGHT);
     g.setFont (juce::FontOptions (14.0f, juce::Font::bold));
-    g.drawText ("AnalogChannel v1.0", titleArea.reduced (8), juce::Justification::centredLeft);
+    juce::String firstPart = "AnalogChannel ";
+    int firstPartWidth = g.getCurrentFont().getStringWidth (firstPart);
+    g.drawText (firstPart, xPos, yCenter - 7, firstPartWidth, 14, juce::Justification::centredLeft);
+
+    // Second part: "| KuramaSound" (normal weight)
+    g.setFont (juce::FontOptions (14.0f, juce::Font::plain));
+    g.drawText ("| KuramaSound", xPos + firstPartWidth, yCenter - 7, 200, 14, juce::Justification::centredLeft);
 
     // Draw borders
     g.setColour (AnalogChannelColors::BORDER_LIGHT);
-    g.drawLine (0, 30, getWidth(), 30, 1.0f);  // Title bar bottom border
+    g.drawLine (0, 28, getWidth(), 28, 1.0f);  // Title bar bottom border
     g.drawLine (0, 0, getWidth(), 0, 1.0f);  // Top border
     g.drawLine (0, getHeight() - 1, getWidth(), getHeight() - 1, 1.0f);  // Bottom border
 }
@@ -120,9 +137,17 @@ void AnalogChannelAudioProcessorEditor::resized()
     bounds.removeFromTop (4);     // Top padding
     bounds.removeFromBottom (4);  // Bottom padding
 
-    // Title bar (30px) - position menu button here
-    auto titleBar = bounds.removeFromTop (30);
-    menuButton.setBounds (titleBar.removeFromRight (30).reduced (6));  // Small square button, right-aligned
+    // Title bar (28px) - position menu button here
+    auto titleBar = bounds.removeFromTop (28);
+
+    // Menu button: 24x24px with 2px margins (top, bottom, right)
+    // Title bar starts at y=0, height=28px, so button should be at y=2 to center vertically
+    int buttonSize = 24;
+    int topMargin = 2;
+    int rightMargin = 2;
+    int buttonX = getWidth() - buttonSize - rightMargin;
+    int buttonY = topMargin;  // Start directly from top (title bar starts at 0)
+    menuButton.setBounds (buttonX, buttonY, buttonSize, buttonSize);
 
     // Main area
     auto mainArea = bounds;
@@ -295,12 +320,53 @@ void AnalogChannelAudioProcessorEditor::applyZoomScale (float scale)
     if (zoomParam != nullptr)
     {
         // Map scale to parameter index (0-3)
-        int zoomIndex = 1;  // Default: 100%
+        int zoomIndex = 2;  // Default: 125%
         if (scale <= 0.75f) zoomIndex = 0;       // 75%
         else if (scale <= 1.0f) zoomIndex = 1;   // 100%
         else if (scale <= 1.25f) zoomIndex = 2;  // 125%
         else zoomIndex = 3;                      // 150%
 
         zoomParam->setValueNotifyingHost (zoomIndex / 3.0f);  // Normalize to 0-1
+    }
+}
+
+void AnalogChannelAudioProcessorEditor::parameterChanged (const juce::String& parameterID, float newValue)
+{
+    // Listen for zoom parameter changes (e.g., when loading presets)
+    if (parameterID == "guiZoom")
+    {
+        auto* zoomParam = dynamic_cast<juce::AudioParameterChoice*> (
+            audioProcessor.getValueTreeState().getParameter ("guiZoom"));
+
+        if (zoomParam != nullptr)
+        {
+            int zoomIndex = zoomParam->getIndex();
+            const float zoomScales[] = { 0.75f, 1.0f, 1.25f, 1.5f };
+
+            // Apply the new zoom scale (but don't save it again to avoid loop)
+            if (zoomIndex >= 0 && zoomIndex < 4)
+            {
+                float newScale = zoomScales[zoomIndex];
+
+                // Only apply if different from current scale (avoid unnecessary updates)
+                if (std::abs (newScale - currentZoomScale) > 0.01f)
+                {
+                    currentZoomScale = newScale;
+
+                    // Base size is 710x580
+                    const int baseWidth = 710;
+                    const int baseHeight = 580;
+
+                    // First, reset any previous transform
+                    setTransform (juce::AffineTransform());
+
+                    // Set the base size (unscaled)
+                    setSize (baseWidth, baseHeight);
+
+                    // Apply the scale factor (JUCE handles everything)
+                    setScaleFactor (newScale);
+                }
+            }
+        }
     }
 }

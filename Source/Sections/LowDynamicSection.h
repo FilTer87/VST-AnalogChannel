@@ -71,6 +71,12 @@ public:
         updateTimingCoefficients();
     }
 
+    void setMix (float percent)
+    {
+        mixPercent = juce::jlimit (0.0f, 100.0f, percent);
+        mixAmount = mixPercent / 100.0f;
+    }
+
     // Get current gain reduction (for metering, if needed)
     float getCurrentGainReduction() const
     {
@@ -281,10 +287,14 @@ protected:
         // === STEP 4: APPLY SMOOTHED GAIN TO ORIGINAL INPUT ===
         // CRITICAL: We apply the smoothed envelope to the ORIGINAL input,
         // NOT to the detected level. This preserves transients above threshold.
-        float output = input * smoothedGain;
+        float wet = input * smoothedGain;
 
         // Store current GR for metering
         currentGR = 20.0f * std::log10(std::max(smoothedGain, 1e-6f));
+
+        // === STEP 5: MIX DRY AND WET ===
+        // mixAmount: 0.0 = 100% dry (bypass), 1.0 = 100% wet (full effect)
+        float output = input * (1.0f - mixAmount) + wet * mixAmount;
 
         return output;
     }
@@ -295,6 +305,10 @@ private:
     float threshold = -20.0f;  // dB (range: -40 to -3)
     float ratio = 0.0f;        // -10 to +10
     bool fastMode = false;
+
+    // Mix parameters
+    float mixPercent = 100.0f;  // Default: 100% (full wet)
+    float mixAmount = 1.0f;
 
     // State
     float rmsState = 0.0f;

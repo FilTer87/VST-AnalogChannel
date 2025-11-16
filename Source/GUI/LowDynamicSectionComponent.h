@@ -40,6 +40,22 @@ public:
         thresholdLabel.setFont (juce::FontOptions (9.0f));
         addAndMakeVisible (thresholdLabel);
 
+        // Mix knob (dry/wet)
+        mixKnob.setSliderStyle (juce::Slider::RotaryHorizontalVerticalDrag);
+        mixKnob.setTextBoxStyle (juce::Slider::TextBoxBelow, false, 45, 16);
+        mixKnob.setTextValueSuffix (" %");
+        addAndMakeVisible (mixKnob);
+
+        mixAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment> (
+            apvts, "lowDynMix", mixKnob);
+
+        // Mix label
+        mixLabel.setText ("Mix", juce::dontSendNotification);
+        mixLabel.setJustificationType (juce::Justification::centred);
+        mixLabel.setColour (juce::Label::textColourId, AnalogChannelColors::TEXT_MAIN);
+        mixLabel.setFont (juce::FontOptions (9.0f));
+        addAndMakeVisible (mixLabel);
+
         // Ratio knob (bipolar)
         ratioKnob.setSliderStyle (juce::Slider::RotaryHorizontalVerticalDrag);
         ratioKnob.setTextBoxStyle (juce::Slider::TextBoxBelow, false, 60, 20);
@@ -49,14 +65,7 @@ public:
         ratioAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment> (
             apvts, "lowDynRatio", ratioKnob);
 
-        // Ratio static label (above knob)
-        ratioStaticLabel.setText ("<- Expand | Lift ->", juce::dontSendNotification);
-        ratioStaticLabel.setJustificationType (juce::Justification::centred);
-        ratioStaticLabel.setColour (juce::Label::textColourId, AnalogChannelColors::TEXT_MAIN);
-        ratioStaticLabel.setFont (juce::FontOptions (9.0f));
-        addAndMakeVisible (ratioStaticLabel);
-
-        // Ratio dynamic label (shows current mode: EXPAND/OFF/LIFT)
+        // Ratio dynamic label (shows current mode: EXPAND/OFF/LIFT) - now above knob instead of static label
         ratioDynamicLabel.setText ("OFF", juce::dontSendNotification);
         ratioDynamicLabel.setJustificationType (juce::Justification::centred);
         ratioDynamicLabel.setColour (juce::Label::textColourId, AnalogChannelColors::TEXT_HIGHLIGHT);
@@ -121,6 +130,14 @@ public:
         // Border
         g.setColour (AnalogChannelColors::BORDER_LIGHT);
         g.drawRoundedRectangle (bounds.reduced (2.0f), 4.0f, 1.0f);
+
+        // Bypass overlay (dark semi-transparent layer when bypassed)
+        bool isBypassed = activeButton.getToggleState();
+        if (isBypassed)
+        {
+            g.setColour (AnalogChannelColors::BG_DARK.withAlpha (0.6f));
+            g.fillRoundedRectangle (bounds.reduced (2.0f), 4.0f);
+        }
     }
 
     void resized() override
@@ -131,22 +148,31 @@ public:
         sectionLabel.setBounds (bounds.removeFromTop (16));
         bounds.removeFromTop (4);
 
-        // Ratio knob (LARGE, top position)
-        ratioStaticLabel.setBounds (bounds.removeFromTop (12));
-        ratioKnob.setBounds (bounds.removeFromTop (80).withSizeKeepingCentre (70, 80));
+        // Ratio dynamic label (EXPAND/OFF/LIFT) above knob, centered
+        ratioDynamicLabel.setBounds (bounds.removeFromTop (14));
         bounds.removeFromTop (2);
 
-        // Ratio dynamic label (shows EXPAND/OFF/LIFT)
-        ratioDynamicLabel.setBounds (bounds.removeFromTop (14));
-        bounds.removeFromTop (6);
-
-        // Threshold knob (SMALL rotary, like EQ MidCut)
-        thresholdLabel.setBounds (bounds.removeFromTop (12));
-        thresholdKnob.setBounds (bounds.removeFromTop (60).withSizeKeepingCentre (50, 60));
+        // Ratio knob (MEDIUM size, centered)
+        ratioKnob.setBounds (bounds.removeFromTop (70).withSizeKeepingCentre (60, 70));
         bounds.removeFromTop (4);
 
-        // Fast button
+        // Fast button (above Thr/Mix knobs, full width)
         fastButton.setBounds (bounds.removeFromTop (24).reduced (10, 0));
+        bounds.removeFromTop (4);
+
+        // Threshold and Mix labels row (aligned above knobs)
+        auto labelsRow = bounds.removeFromTop (12);
+        thresholdLabel.setBounds (labelsRow.removeFromLeft (50));
+        labelsRow.removeFromLeft (10);  // Spacing
+        mixLabel.setBounds (labelsRow.removeFromRight (50));
+        bounds.removeFromTop (2);
+
+        // Threshold (left) and Mix (right) knobs row
+        auto knobsRow = bounds.removeFromTop (60);
+        thresholdKnob.setBounds (knobsRow.removeFromLeft (50).withSizeKeepingCentre (50, 60));
+        knobsRow.removeFromLeft (10);  // Spacing
+        mixKnob.setBounds (knobsRow.removeFromRight (50).withSizeKeepingCentre (50, 60));
+
         bounds.removeFromTop (4);
 
         // Active button (bypass, bottom - full width with small margins)
@@ -160,17 +186,19 @@ private:
     // Components
     juce::Slider thresholdKnob;
     juce::Slider ratioKnob;
+    juce::Slider mixKnob;
     juce::ToggleButton fastButton;
     juce::ToggleButton activeButton;
 
     juce::Label thresholdLabel;
-    juce::Label ratioStaticLabel;
-    juce::Label ratioDynamicLabel;  // Dynamic: EXPAND/OFF/LIFT
+    juce::Label mixLabel;
+    juce::Label ratioDynamicLabel;  // Dynamic: EXPAND/OFF/LIFT (now above ratio knob)
     juce::Label sectionLabel;
 
     // Parameter attachments
     std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> thresholdAttachment;
     std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> ratioAttachment;
+    std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> mixAttachment;
     std::unique_ptr<juce::AudioProcessorValueTreeState::ButtonAttachment> fastAttachment;
     std::unique_ptr<juce::AudioProcessorValueTreeState::ButtonAttachment> bypassAttachment;
 
@@ -189,20 +217,19 @@ private:
         // Enable/disable controls (blocks interaction)
         thresholdKnob.setEnabled (isActive);
         ratioKnob.setEnabled (isActive);
+        mixKnob.setEnabled (isActive);
         fastButton.setEnabled (isActive);
 
         // Dim ALL components when bypassed (knobs + labels + buttons)
-        // NOTE: activeButton itself should NOT be dimmed (it's the control)
-        float controlAlpha = isActive ? 1.0f : 0.3f;
+        float controlAlpha = isActive ? 1.0f : 0.4f;
         thresholdKnob.setAlpha (controlAlpha);
         ratioKnob.setAlpha (controlAlpha);
+        mixKnob.setAlpha (controlAlpha);
         fastButton.setAlpha (controlAlpha);
         thresholdLabel.setAlpha (controlAlpha);
-        ratioStaticLabel.setAlpha (controlAlpha);
+        mixLabel.setAlpha (controlAlpha);
         ratioDynamicLabel.setAlpha (controlAlpha);
         sectionLabel.setAlpha (controlAlpha);
-
-        // Actually, DO dim the activeButton for consistency with other sections
         activeButton.setAlpha (controlAlpha);
 
         repaint();
@@ -212,12 +239,12 @@ private:
     {
         float ratio = static_cast<float> (ratioKnob.getValue());
 
-        if (ratio < -0.5f)
+        if (ratio < -0.1f)
         {
             ratioDynamicLabel.setText ("EXPAND", juce::dontSendNotification);
             ratioDynamicLabel.setColour (juce::Label::textColourId, AnalogChannelColors::KNOB_INDICATOR);  // Orange for expansion
         }
-        else if (ratio > 0.5f)
+        else if (ratio > 0.1f)
         {
             ratioDynamicLabel.setText ("LIFT", juce::dontSendNotification);
             ratioDynamicLabel.setColour (juce::Label::textColourId, AnalogChannelColors::LED_GREEN);  // Green for lift

@@ -510,6 +510,7 @@ void AnalogChannelAudioProcessor::updateAllSections()
         auto lowDynThresh = parameters.getRawParameterValue ("lowDynThresh");
         auto lowDynRatio = parameters.getRawParameterValue ("lowDynRatio");
         auto lowDynFast = parameters.getRawParameterValue ("lowDynFast");
+        auto lowDynMix = parameters.getRawParameterValue ("lowDynMix");
         auto lowDynBypass = parameters.getRawParameterValue ("lowDynBypass");
 
         if (lowDynThresh != nullptr)
@@ -518,6 +519,8 @@ void AnalogChannelAudioProcessor::updateAllSections()
             lowDynamic[ch].setRatio (*lowDynRatio);
         if (lowDynFast != nullptr)
             lowDynamic[ch].setFastMode (*lowDynFast > 0.5f);
+        if (lowDynMix != nullptr)
+            lowDynamic[ch].setMix (*lowDynMix);
         if (lowDynBypass != nullptr)
         {
             // CRITICAL: Bypass parameter is 1.0 when button is ON (bypassed)
@@ -696,6 +699,11 @@ juce::AudioProcessorValueTreeState::ParameterLayout AnalogChannelAudioProcessor:
     params.push_back (std::make_unique<juce::AudioParameterBool> (
         "lowDynFast", "Low Dynamic Fast Mode", false));  // Default: Normal (OFF)
 
+    params.push_back (std::make_unique<juce::AudioParameterFloat> (
+        "lowDynMix", "Low Dynamic Mix",
+        juce::NormalisableRange<float> (0.0f, 100.0f, 1.0f),
+        100.0f, "%"));  // Default: 100% wet
+
     params.push_back (std::make_unique<juce::AudioParameterBool> (
         "lowDynBypass", "Low Dynamic Bypass", false));
 
@@ -853,7 +861,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout AnalogChannelAudioProcessor:
     params.push_back (std::make_unique<juce::AudioParameterChoice> (
         "guiZoom", "GUI Zoom",
         juce::StringArray { "75%", "100%", "125%", "150%" },
-        1)); // Default: 100%
+        2)); // Default: 125% (index 2 = actual opening size)
 
     return { params.begin(), params.end() };
 }

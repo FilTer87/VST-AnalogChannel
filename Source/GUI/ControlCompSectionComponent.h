@@ -40,7 +40,7 @@ public:
 
         // Attack/Release toggle button
         // Parameter order: { "Normal", "Fast" } → OFF (gray) = Normal, ON (orange) = Fast
-        arButton.setButtonText ("FAST Atk/Rel");
+        arButton.setButtonText ("FAST");
         arButton.setClickingTogglesState (true);
         addAndMakeVisible (arButton);
 
