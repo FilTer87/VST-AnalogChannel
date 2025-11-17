@@ -71,15 +71,33 @@ public:
     }
 
     //==============================================================================
+    void setPRNGSeed (uint32_t seed)
+    {
+        fpd = seed;
+        // Re-initialize nextmax with new seed
+        fpd ^= fpd << 13; fpd ^= fpd >> 17; fpd ^= fpd << 5;
+        nextmax = 0.24 + (fpd / static_cast<double>(UINT32_MAX) * 0.74);
+        fpd ^= fpd << 13; fpd ^= fpd >> 17; fpd ^= fpd << 5;
+        phantomNextmax = 0.24 + (fpd / static_cast<double>(UINT32_MAX) * 0.74);
+    }
+
     void reset()
     {
         iirEnc = compEnc = avgEnc = 0.0;
         iirDec = compDec = avgDec = 0.0;
 
-        for (int i = 0; i < 1000; ++i)
+        for (int i = 0; i < 1002; ++i)
             delayBuffer[i] = 0.0;
         gcount = 0;
-        sweep = nextmax = 0.0;
+        sweep = 0.0;
+        phantomSweep = 3.14159265358979323846;  // π radians offset
+
+        // CRITICAL: Initialize nextmax with random values (0.24 to 0.98 range)
+        // If nextmax = 0.0, sweep never increments and flutter is completely frozen!
+        fpd ^= fpd << 13; fpd ^= fpd >> 17; fpd ^= fpd << 5;
+        nextmax = 0.24 + (fpd / static_cast<double>(UINT32_MAX) * 0.74);
+        fpd ^= fpd << 13; fpd ^= fpd >> 17; fpd ^= fpd << 5;
+        phantomNextmax = 0.24 + (fpd / static_cast<double>(UINT32_MAX) * 0.74);
 
         for (int i = 0; i < gslew_total; ++i)
             gslew[i] = 0.0;
@@ -224,6 +242,10 @@ public:
             int count = gcount;
             double offset = flutDepth + (flutDepth * std::sin (sweep));
             sweep += nextmax * flutFrequency;
+
+            // Update phantom channel sweep (mimics opposite channel in stereo)
+            phantomSweep += phantomNextmax * flutFrequency;
+
             if (sweep > (juce::MathConstants<double>::twoPi))
             {
                 sweep -= juce::MathConstants<double>::twoPi;
@@ -231,10 +253,26 @@ public:
                 double flutA = 0.24 + (fpd / static_cast<double>(UINT32_MAX) * 0.74);
                 fpd ^= fpd << 13; fpd ^= fpd >> 17; fpd ^= fpd << 5;
                 double flutB = 0.24 + (fpd / static_cast<double>(UINT32_MAX) * 0.74);
-                if (std::fabs (flutA - std::sin (sweep + nextmax)) < std::fabs (flutB - std::sin (sweep + nextmax)))
+                // Cross-coupling: compare against phantom channel (mimics L uses R, R uses L in stereo)
+                if (std::fabs (flutA - std::sin (phantomSweep + phantomNextmax)) < std::fabs (flutB - std::sin (phantomSweep + phantomNextmax)))
                     nextmax = flutA;
                 else
                     nextmax = flutB;
+            }
+
+            // Handle phantom channel wrap and random generation
+            if (phantomSweep > (juce::MathConstants<double>::twoPi))
+            {
+                phantomSweep -= juce::MathConstants<double>::twoPi;
+                fpd ^= fpd << 13; fpd ^= fpd >> 17; fpd ^= fpd << 5;
+                double phantomFlutA = 0.24 + (fpd / static_cast<double>(UINT32_MAX) * 0.74);
+                fpd ^= fpd << 13; fpd ^= fpd >> 17; fpd ^= fpd << 5;
+                double phantomFlutB = 0.24 + (fpd / static_cast<double>(UINT32_MAX) * 0.74);
+                // Phantom channel compares against main channel (opposite direction)
+                if (std::fabs (phantomFlutA - std::sin (sweep + nextmax)) < std::fabs (phantomFlutB - std::sin (sweep + nextmax)))
+                    phantomNextmax = phantomFlutA;
+                else
+                    phantomNextmax = phantomFlutB;
             }
             count += static_cast<int> (std::floor (offset));
             inputSample = (delayBuffer[count - ((count > 999) ? 1000 : 0)] * (1.0 - (offset - std::floor (offset))));
@@ -385,9 +423,10 @@ private:
     double avgEnc, avgDec;
 
     // Flutter state
-    double delayBuffer[1000];
+    double delayBuffer[1002];  // 1002 samples (not 1000) to prevent overflow when accessing count+1
     int gcount;
     double sweep, nextmax;
+    double phantomSweep, phantomNextmax;  // Phantom channel for cross-coupling (mimics stereo behavior)
 
     // Bias state
     double gslew[gslew_total];

@@ -69,6 +69,19 @@ public:
         driveLinear = std::pow (10.0f, dB / 20.0f);
     }
 
+    /**
+        Sets the channel index for PRNG seed initialization.
+        This ensures L and R channels have independent random sequences for flutter.
+        @param channelIdx 0 for left, 1 for right
+    */
+    void setChannelIndex (int channelIdx)
+    {
+        // Use large prime offset (1000000007) to ensure completely different PRNG sequences
+        uint32_t seed = 17 + static_cast<uint32_t>(channelIdx) * 1000000007;
+        toTape8.setPRNGSeed (seed);
+        tube2.setPRNGSeed (seed);
+    }
+
 protected:
     //==============================================================================
     float processInternal (float input) override

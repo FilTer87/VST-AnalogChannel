@@ -246,6 +246,9 @@ void AnalogChannelAudioProcessorEditor::showOptionsMenu()
     // User Manual
     menu.addItem (1, "User Manual", true);
 
+    // Support
+    menu.addItem(3, "Support the author", true);
+
     // About / Credits
     menu.addItem (2, "About / Credits", true);
 
@@ -267,7 +270,7 @@ void AnalogChannelAudioProcessorEditor::showOptionsMenu()
                             switch (result)
                             {
                                 case 1:  // User Manual
-                                    juce::URL ("https://github.com/yourusername/AnalogChannel").launchInDefaultBrowser();
+                                    juce::URL ("https://github.com/FilTer87/VST-AnalogChannel/Docs/UserManual.md").launchInDefaultBrowser();
                                     break;
 
                                 case 2:  // About / Credits
@@ -293,13 +296,17 @@ void AnalogChannelAudioProcessorEditor::showOptionsMenu()
                                             addAndMakeVisible (infoLabel);
 
                                             // Links
-                                            kuramaLink = std::make_unique<juce::HyperlinkButton> ("KuramaSound",
-                                                juce::URL ("https://www.kuramasound.com"));
-                                            addAndMakeVisible (*kuramaLink);
+                                            githubLink = std::make_unique<juce::HyperlinkButton>("Source code & Docs",
+                                                juce::URL("https://github.com/FilTer87/VST-AnalogChannel"));
+                                            addAndMakeVisible(*githubLink);
 
-                                            supportLink = std::make_unique<juce::HyperlinkButton> ("Support the author",
-                                                juce::URL ("https://buymeacoffee.com/oz3watvqah"));
-                                            addAndMakeVisible (*supportLink);
+                                            kuramaLink = std::make_unique<juce::HyperlinkButton>("KuramaSound.com",
+                                                juce::URL("https://www.kuramasound.com"));
+                                            addAndMakeVisible(*kuramaLink);
+
+                                            supportLink = std::make_unique<juce::HyperlinkButton>("-- Buy me a coffe :) --",
+                                                juce::URL("https://buymeacoffee.com/oz3watvqah"));
+                                            addAndMakeVisible(*supportLink);
 
                                             creditsLabel.setText ("Built with JUCE Framework\nLicense: GPL v3\n\nThird party DSP algorithms from:",
                                                                  juce::dontSendNotification);
@@ -342,13 +349,17 @@ void AnalogChannelAudioProcessorEditor::showOptionsMenu()
                                             infoLabel.setBounds (bounds.removeFromTop (35));
                                             bounds.removeFromTop (5);
 
+                                            // GitHub link
+                                            githubLink->setBounds(bounds.removeFromTop(20).withSizeKeepingCentre(180, 20));
+                                            bounds.removeFromTop(5);
+
                                             // KuramaSound link
-                                            kuramaLink->setBounds (bounds.removeFromTop (20).withSizeKeepingCentre (150, 20));
-                                            bounds.removeFromTop (2);
+                                            kuramaLink->setBounds(bounds.removeFromTop(20).withSizeKeepingCentre(150, 20));
+                                            bounds.removeFromTop(2);
 
                                             // Support link
-                                            supportLink->setBounds (bounds.removeFromTop (20).withSizeKeepingCentre (180, 20));
-                                            bounds.removeFromTop (5);
+                                            supportLink->setBounds(bounds.removeFromTop(20).withSizeKeepingCentre(180, 20));
+                                            bounds.removeFromTop(5);
 
                                             // Credits
                                             creditsLabel.setBounds (bounds.removeFromTop (80));
@@ -372,7 +383,7 @@ void AnalogChannelAudioProcessorEditor::showOptionsMenu()
                                     private:
                                         juce::ImageComponent logoImage;
                                         juce::Label infoLabel, creditsLabel, loserLabel, thanksLabel;
-                                        std::unique_ptr<juce::HyperlinkButton> kuramaLink, supportLink, airwindowsLink, jclonesLink;
+                                        std::unique_ptr<juce::HyperlinkButton> githubLink, kuramaLink, supportLink, airwindowsLink, jclonesLink;
                                     };
 
                                     auto* content = new AboutContent (bannerLogoImage);
@@ -390,6 +401,10 @@ void AnalogChannelAudioProcessorEditor::showOptionsMenu()
 
                                     break;
                                 }
+
+                                case 3:  // Support / Buy me a coffe
+                                    juce::URL("https://buymeacoffee.com/oz3watvqah").launchInDefaultBrowser();
+                                    break;
 
                                 case 10:  // 75%
                                     applyZoomScale (0.75f);

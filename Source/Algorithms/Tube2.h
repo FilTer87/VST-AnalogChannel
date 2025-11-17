@@ -40,6 +40,12 @@ public:
     }
 
     //==============================================================================
+    void setPRNGSeed (uint32_t /*seed*/)
+    {
+        // Tube2 doesn't use PRNG, this method exists for API consistency with ToTape8
+        // No-op implementation
+    }
+
     void reset()
     {
         previousSampleA = 0.0;

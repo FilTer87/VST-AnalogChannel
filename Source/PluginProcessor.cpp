@@ -122,6 +122,9 @@ void AnalogChannelAudioProcessor::prepareToPlay (double sampleRate, int samplesP
     // Initialize all sections with sample rate (dual-mono: left and right)
     for (int ch = 0; ch < 2; ++ch)
     {
+        // Set channel index for PRNG seed initialization (L/R independent random sequences)
+        preInput[ch].setChannelIndex (ch);
+
         preInput[ch].setSampleRate (sampleRate);
         filters[ch].setSampleRate (sampleRate);
         controlComp[ch].setSampleRate (sampleRate);
