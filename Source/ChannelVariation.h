@@ -50,7 +50,7 @@ struct ChannelVariationPreset
     float hpfQ;              // ±0.06
 
     // Console
-    float consoleDrive;      // ±1.5dB
+    float consoleDrive;      // ±0.25dB
 
     // Output
     float outputGain;        // ±0.09dB
@@ -89,7 +89,7 @@ namespace ChannelVariations
             -0.029f,   // lpfQ
             -5.18f,    // hpfFreq
             0.051f,    // hpfQ
-            0.874f,    // consoleDrive
+            -0.117f,   // consoleDrive
             -0.058f    // outputGain
         },
 
@@ -109,7 +109,7 @@ namespace ChannelVariations
             0.041f,    // lpfQ
             4.76f,     // hpfFreq
             -0.038f,   // hpfQ
-            -1.127f,   // consoleDrive
+            -0.120f,   // consoleDrive
             0.074f     // outputGain
         },
 
@@ -129,7 +129,7 @@ namespace ChannelVariations
             0.053f,    // lpfQ
             6.39f,     // hpfFreq
             0.024f,    // hpfQ
-            1.235f,    // consoleDrive
+            0.129f,    // consoleDrive
             0.037f     // outputGain
         },
 
@@ -149,7 +149,7 @@ namespace ChannelVariations
             -0.047f,   // lpfQ
             -7.52f,    // hpfFreq
             -0.033f,   // hpfQ
-            -0.692f,   // consoleDrive
+            0.035f,    // consoleDrive
             -0.081f    // outputGain
         },
 
@@ -169,7 +169,7 @@ namespace ChannelVariations
             0.019f,    // lpfQ
             3.84f,     // hpfFreq
             0.046f,    // hpfQ
-            0.538f,    // consoleDrive
+            -0.088f,   // consoleDrive
             0.065f     // outputGain
         },
 
@@ -189,7 +189,7 @@ namespace ChannelVariations
             -0.056f,   // lpfQ
             -2.17f,    // hpfFreq
             -0.059f,   // hpfQ
-            -1.384f,   // consoleDrive
+            -0.079f,   // consoleDrive
             -0.044f    // outputGain
         },
 
@@ -209,7 +209,7 @@ namespace ChannelVariations
             0.037f,    // lpfQ
             7.61f,     // hpfFreq
             0.011f,    // hpfQ
-            0.961f,    // consoleDrive
+            -0.116f,   // consoleDrive
             0.028f     // outputGain
         },
 
@@ -229,7 +229,7 @@ namespace ChannelVariations
             0.044f,    // lpfQ
             -4.95f,    // hpfFreq
             0.057f,    // hpfQ
-            -0.815f,   // consoleDrive
+            0.008f,    // consoleDrive
             -0.072f    // outputGain
         },
 
@@ -249,7 +249,7 @@ namespace ChannelVariations
             -0.022f,   // lpfQ
             5.28f,     // hpfFreq
             -0.048f,   // hpfQ
-            1.173f,    // consoleDrive
+            0.203f,    // consoleDrive
             0.083f     // outputGain
         },
 
@@ -269,7 +269,7 @@ namespace ChannelVariations
             0.031f,    // lpfQ
             -6.83f,    // hpfFreq
             0.042f,    // hpfQ
-            -1.048f,   // consoleDrive
+            -0.178f,   // consoleDrive
             -0.019f    // outputGain
         },
 
@@ -289,7 +289,7 @@ namespace ChannelVariations
             0.049f,    // lpfQ
             2.94f,     // hpfFreq
             -0.025f,   // hpfQ
-            0.726f,    // consoleDrive
+            0.127f,    // consoleDrive
             0.051f     // outputGain
         },
 
@@ -309,7 +309,7 @@ namespace ChannelVariations
             -0.043f,   // lpfQ
             6.47f,     // hpfFreq
             0.035f,    // hpfQ
-            -1.291f,   // consoleDrive
+            -0.219f,   // consoleDrive
             -0.067f    // outputGain
         },
 
@@ -329,7 +329,7 @@ namespace ChannelVariations
             0.026f,    // lpfQ
             -3.59f,    // hpfFreq
             -0.054f,   // hpfQ
-            0.429f,    // consoleDrive
+            0.075f,    // consoleDrive
             0.076f     // outputGain
         },
 
@@ -349,7 +349,7 @@ namespace ChannelVariations
             -0.051f,   // lpfQ
             7.28f,     // hpfFreq
             0.039f,    // hpfQ
-            -0.567f,   // consoleDrive
+            -0.096f,   // consoleDrive
             -0.086f    // outputGain
         },
 
@@ -369,7 +369,7 @@ namespace ChannelVariations
             0.054f,    // lpfQ
             4.13f,     // hpfFreq
             0.048f,    // hpfQ
-            1.352f,    // consoleDrive
+            0.229f,    // consoleDrive
             0.042f     // outputGain
         },
 
@@ -389,7 +389,7 @@ namespace ChannelVariations
             0.017f,    // lpfQ
             -7.91f,    // hpfFreq
             -0.044f,   // hpfQ
-            -0.903f,   // consoleDrive
+            -0.153f,   // consoleDrive
             -0.053f    // outputGain
         },
 
@@ -409,7 +409,7 @@ namespace ChannelVariations
             -0.035f,   // lpfQ
             5.76f,     // hpfFreq
             0.022f,    // hpfQ
-            0.648f,    // consoleDrive
+            0.113f,    // consoleDrive
             0.061f     // outputGain
         },
 
@@ -429,7 +429,7 @@ namespace ChannelVariations
             0.046f,    // lpfQ
             -1.68f,    // hpfFreq
             -0.057f,   // hpfQ
-            -1.216f,   // consoleDrive
+            -0.206f,   // consoleDrive
             -0.024f    // outputGain
         },
 
@@ -449,7 +449,7 @@ namespace ChannelVariations
             0.028f,    // lpfQ
             8.05f,     // hpfFreq
             0.014f,    // hpfQ
-            1.094f,    // consoleDrive
+            0.191f,    // consoleDrive
             0.079f     // outputGain
         },
 
@@ -469,7 +469,7 @@ namespace ChannelVariations
             -0.039f,   // lpfQ
             -5.41f,    // hpfFreq
             0.043f,    // hpfQ
-            -0.781f,   // consoleDrive
+            -0.132f,   // consoleDrive
             -0.071f    // outputGain
         },
 
@@ -489,7 +489,7 @@ namespace ChannelVariations
             0.052f,    // lpfQ
             3.26f,     // hpfFreq
             -0.052f,   // hpfQ
-            0.517f,    // consoleDrive
+            0.090f,    // consoleDrive
             0.038f     // outputGain
         },
 
@@ -509,7 +509,7 @@ namespace ChannelVariations
             -0.045f,   // lpfQ
             6.92f,     // hpfFreq
             0.031f,    // hpfQ
-            -1.429f,   // consoleDrive
+            -0.242f,   // consoleDrive
             -0.089f    // outputGain
         },
 
@@ -529,7 +529,7 @@ namespace ChannelVariations
             0.024f,    // lpfQ
             -4.27f,    // hpfFreq
             -0.041f,   // hpfQ
-            0.835f,    // consoleDrive
+            0.146f,    // consoleDrive
             0.054f     // outputGain
         },
 
@@ -549,7 +549,7 @@ namespace ChannelVariations
             0.036f,    // lpfQ
             -8.16f,    // hpfFreq
             0.059f,    // hpfQ
-            -0.674f,   // consoleDrive
+            -0.114f,   // consoleDrive
             -0.047f    // outputGain
         },
 
@@ -569,7 +569,7 @@ namespace ChannelVariations
             -0.048f,   // lpfQ
             7.54f,     // hpfFreq
             0.027f,    // hpfQ
-            1.267f,    // consoleDrive
+            0.215f,    // consoleDrive
             0.068f     // outputGain
         },
 
@@ -589,7 +589,7 @@ namespace ChannelVariations
             0.049f,    // lpfQ
             2.83f,     // hpfFreq
             -0.036f,   // hpfQ
-            -1.152f,   // consoleDrive
+            -0.195f,   // consoleDrive
             -0.082f    // outputGain
         },
 
@@ -609,7 +609,7 @@ namespace ChannelVariations
             0.033f,    // lpfQ
             5.97f,     // hpfFreq
             0.055f,    // hpfQ
-            0.426f,    // consoleDrive
+            0.074f,    // consoleDrive
             0.025f     // outputGain
         },
 
@@ -629,7 +629,7 @@ namespace ChannelVariations
             -0.042f,   // lpfQ
             -3.14f,    // hpfFreq
             -0.046f,   // hpfQ
-            -0.948f,   // consoleDrive
+            -0.161f,   // consoleDrive
             -0.036f    // outputGain
         },
 
@@ -649,7 +649,7 @@ namespace ChannelVariations
             0.019f,    // lpfQ
             -6.72f,    // hpfFreq
             0.034f,    // hpfQ
-            1.018f,    // consoleDrive
+            0.178f,    // consoleDrive
             0.073f     // outputGain
         },
 
@@ -669,7 +669,7 @@ namespace ChannelVariations
             0.045f,    // lpfQ
             4.48f,     // hpfFreq
             -0.058f,   // hpfQ
-            -1.375f,   // consoleDrive
+            -0.233f,   // consoleDrive
             -0.063f    // outputGain
         },
 
@@ -689,7 +689,7 @@ namespace ChannelVariations
             -0.027f,   // lpfQ
             8.34f,     // hpfFreq
             0.049f,    // hpfQ
-            0.693f,    // consoleDrive
+            0.121f,    // consoleDrive
             0.041f     // outputGain
         },
 
@@ -709,7 +709,7 @@ namespace ChannelVariations
             0.038f,    // lpfQ
             -7.26f,    // hpfFreq
             -0.023f,   // hpfQ
-            -0.856f,   // consoleDrive
+            -0.145f,   // consoleDrive
             -0.077f    // outputGain
         },
 
@@ -729,7 +729,7 @@ namespace ChannelVariations
             0.054f,    // lpfQ
             3.68f,     // hpfFreq
             0.037f,    // hpfQ
-            1.341f,    // consoleDrive
+            0.227f,    // consoleDrive
             0.085f     // outputGain
         },
 
@@ -749,7 +749,7 @@ namespace ChannelVariations
             -0.031f,   // lpfQ
             5.19f,     // hpfFreq
             -0.049f,   // hpfQ
-            -0.739f,   // consoleDrive
+            -0.125f,   // consoleDrive
             -0.052f    // outputGain
         },
 
@@ -769,7 +769,7 @@ namespace ChannelVariations
             0.027f,    // lpfQ
             -5.93f,    // hpfFreq
             0.043f,    // hpfQ
-            0.582f,    // consoleDrive
+            0.102f,    // consoleDrive
             0.069f     // outputGain
         },
 
@@ -789,7 +789,7 @@ namespace ChannelVariations
             -0.053f,   // lpfQ
             6.51f,     // hpfFreq
             0.018f,    // hpfQ
-            -1.194f,   // consoleDrive
+            -0.202f,   // consoleDrive
             -0.031f    // outputGain
         },
 
@@ -809,7 +809,7 @@ namespace ChannelVariations
             0.046f,    // lpfQ
             -2.86f,    // hpfFreq
             -0.056f,   // hpfQ
-            0.917f,    // consoleDrive
+            0.160f,    // consoleDrive
             0.057f     // outputGain
         },
 
@@ -829,7 +829,7 @@ namespace ChannelVariations
             0.029f,    // lpfQ
             7.83f,     // hpfFreq
             0.052f,    // hpfQ
-            -1.063f,   // consoleDrive
+            -0.180f,   // consoleDrive
             -0.088f    // outputGain
         },
 
@@ -849,7 +849,7 @@ namespace ChannelVariations
             -0.044f,   // lpfQ
             4.75f,     // hpfFreq
             0.015f,    // hpfQ
-            1.126f,    // consoleDrive
+            0.196f,    // consoleDrive
             0.033f     // outputGain
         },
 
@@ -869,7 +869,7 @@ namespace ChannelVariations
             0.041f,    // lpfQ
             -8.47f,    // hpfFreq
             -0.033f,   // hpfQ
-            -0.821f,   // consoleDrive
+            -0.139f,   // consoleDrive
             -0.064f    // outputGain
         },
 
@@ -889,7 +889,7 @@ namespace ChannelVariations
             0.051f,    // lpfQ
             2.47f,     // hpfFreq
             0.045f,    // hpfQ
-            0.764f,    // consoleDrive
+            0.133f,    // consoleDrive
             0.078f     // outputGain
         },
 
@@ -909,7 +909,7 @@ namespace ChannelVariations
             -0.037f,   // lpfQ
             5.62f,     // hpfFreq
             -0.051f,   // hpfQ
-            -1.487f,   // consoleDrive
+            -0.252f,   // consoleDrive
             -0.046f    // outputGain
         },
 
@@ -929,7 +929,7 @@ namespace ChannelVariations
             0.034f,    // lpfQ
             -7.18f,    // hpfFreq
             0.026f,    // hpfQ
-            0.459f,    // consoleDrive
+            0.080f,    // consoleDrive
             0.084f     // outputGain
         },
 
@@ -949,7 +949,7 @@ namespace ChannelVariations
             0.047f,    // lpfQ
             3.91f,     // hpfFreq
             0.039f,    // hpfQ
-            -0.627f,   // consoleDrive
+            -0.106f,   // consoleDrive
             -0.072f    // outputGain
         },
 
@@ -969,7 +969,7 @@ namespace ChannelVariations
             -0.025f,   // lpfQ
             6.29f,     // hpfFreq
             -0.042f,   // hpfQ
-            1.253f,    // consoleDrive
+            0.219f,    // consoleDrive
             0.049f     // outputGain
         },
 
@@ -989,7 +989,7 @@ namespace ChannelVariations
             0.056f,    // lpfQ
             -4.53f,    // hpfFreq
             0.058f,    // hpfQ
-            -0.896f,   // consoleDrive
+            -0.152f,   // consoleDrive
             -0.059f    // outputGain
         },
 
@@ -1009,7 +1009,7 @@ namespace ChannelVariations
             0.019f,    // lpfQ
             8.72f,     // hpfFreq
             0.047f,    // hpfQ
-            1.082f,    // consoleDrive
+            0.189f,    // consoleDrive
             0.066f     // outputGain
         },
 
@@ -1029,7 +1029,7 @@ namespace ChannelVariations
             -0.049f,   // lpfQ
             -6.14f,    // hpfFreq
             -0.029f,   // hpfQ
-            -1.316f,   // consoleDrive
+            -0.223f,   // consoleDrive
             -0.081f    // outputGain
         }
     }};

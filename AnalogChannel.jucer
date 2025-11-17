@@ -80,6 +80,12 @@
             file="Source/PluginEditor.cpp"/>
       <FILE id="zADirz" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
     </GROUP>
+    <GROUP id="{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}" name="Resources">
+      <FILE id="FavIcon" name="favicon-32x32.png" compile="0" resource="1"
+            file="Docs/images/logos/favicon-32x32.png"/>
+      <FILE id="LogoBnr" name="logo_banner.png" compile="0" resource="1"
+            file="Docs/images/logos/logo_banner.png"/>
+    </GROUP>
   </MAINGROUP>
   <MODULES>
     <MODULE id="juce_audio_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>

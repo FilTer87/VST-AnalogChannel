@@ -66,6 +66,10 @@ AnalogChannelAudioProcessorEditor::AnalogChannelAudioProcessorEditor (AnalogChan
     menuButton.onClick = [this] { showOptionsMenu(); };
     addAndMakeVisible (menuButton);
 
+    // Load logo images from binary resources
+    faviconImage = juce::ImageCache::getFromMemory (BinaryData::favicon32x32_png, BinaryData::favicon32x32_pngSize);
+    bannerLogoImage = juce::ImageCache::getFromMemory (BinaryData::logo_banner_png, BinaryData::logo_banner_pngSize);
+
     // Load saved zoom preference and register listener
     audioProcessor.getValueTreeState().addParameterListener ("guiZoom", this);
 
@@ -106,9 +110,19 @@ void AnalogChannelAudioProcessorEditor::paint (juce::Graphics& g)
     g.setColour (AnalogChannelColors::PANEL_BG);
     g.fillRect (titleArea);
 
+    // Draw favicon (28x28) at left of title bar
+    if (faviconImage.isValid())
+    {
+        int faviconSize = 28;
+        int faviconX = 6;  // Small left margin
+        int faviconY = 0;  // Top of title bar (no margin, fills height)
+        auto faviconBounds = juce::Rectangle<int> (faviconX, faviconY, faviconSize, faviconSize);
+        g.drawImage (faviconImage, faviconBounds.toFloat(), juce::RectanglePlacement::centred);
+    }
+
     // Draw title with two styles: "AnalogChannel" (bold) + " | KuramaSound" (normal)
-    auto titleTextArea = titleArea.reduced (8, 0);
-    int xPos = titleTextArea.getX();
+    // Start text after favicon
+    int textStartX = 6 + 28 + 8;  // favicon margin + size + spacing
     int yCenter = titleArea.getCentreY();
 
     // First part: "AnalogChannel " (bold)
@@ -116,11 +130,11 @@ void AnalogChannelAudioProcessorEditor::paint (juce::Graphics& g)
     g.setFont (juce::FontOptions (14.0f, juce::Font::bold));
     juce::String firstPart = "AnalogChannel ";
     int firstPartWidth = g.getCurrentFont().getStringWidth (firstPart);
-    g.drawText (firstPart, xPos, yCenter - 7, firstPartWidth, 14, juce::Justification::centredLeft);
+    g.drawText (firstPart, textStartX, yCenter - 7, firstPartWidth, 14, juce::Justification::centredLeft);
 
     // Second part: "| KuramaSound" (normal weight)
     g.setFont (juce::FontOptions (14.0f, juce::Font::plain));
-    g.drawText ("| KuramaSound", xPos + firstPartWidth, yCenter - 7, 200, 14, juce::Justification::centredLeft);
+    g.drawText ("| KuramaSound", textStartX + firstPartWidth, yCenter - 7, 200, 14, juce::Justification::centredLeft);
 
     // Draw borders
     g.setColour (AnalogChannelColors::BORDER_LIGHT);
@@ -258,16 +272,122 @@ void AnalogChannelAudioProcessorEditor::showOptionsMenu()
 
                                 case 2:  // About / Credits
                                 {
-                                    juce::AlertWindow::showMessageBoxAsync (
-                                        juce::AlertWindow::InfoIcon,
-                                        "About AnalogChannel",
-                                        "AnalogChannel v1.0\n\n"
-                                        "VST3 Channel Strip Plugin\n"
-                                        "Copyright (c) 2025 KuramaSound\n\n"
-                                        "Algorithms from AirWindows (MIT License)\n"
-                                        "Built with JUCE Framework\n\n"
-                                        "GPL v3 License",
-                                        "OK");
+                                    // Create custom component for About content
+                                    class AboutContent : public juce::Component
+                                    {
+                                    public:
+                                        AboutContent (const juce::Image& logo)
+                                        {
+                                            // Logo image
+                                            if (logo.isValid())
+                                            {
+                                                logoImage.setImage (logo);
+                                                logoImage.setImagePlacement (juce::RectanglePlacement::centred);
+                                                addAndMakeVisible (logoImage);
+                                            }
+
+                                            // Text labels
+                                            infoLabel.setText ("AnalogChannel v0.4\nVST3 Channel Strip Plugin by Filippo Terenzi",
+                                                              juce::dontSendNotification);
+                                            infoLabel.setJustificationType (juce::Justification::centred);
+                                            addAndMakeVisible (infoLabel);
+
+                                            // Links
+                                            kuramaLink = std::make_unique<juce::HyperlinkButton> ("KuramaSound",
+                                                juce::URL ("https://www.kuramasound.com"));
+                                            addAndMakeVisible (*kuramaLink);
+
+                                            supportLink = std::make_unique<juce::HyperlinkButton> ("Support the author",
+                                                juce::URL ("https://buymeacoffee.com/oz3watvqah"));
+                                            addAndMakeVisible (*supportLink);
+
+                                            creditsLabel.setText ("Built with JUCE Framework\nLicense: GPL v3\n\nThird party DSP algorithms from:",
+                                                                 juce::dontSendNotification);
+                                            creditsLabel.setJustificationType (juce::Justification::centred);
+                                            addAndMakeVisible (creditsLabel);
+
+                                            airwindowsLink = std::make_unique<juce::HyperlinkButton> ("- AirWindows",
+                                                juce::URL ("https://www.airwindows.com/"));
+                                            addAndMakeVisible (*airwindowsLink);
+
+                                            jclonesLink = std::make_unique<juce::HyperlinkButton>("- JClones",
+                                                juce::URL("https://github.com/JClones"));
+                                            addAndMakeVisible(*jclonesLink);
+
+                                            loserLabel.setText ("- Michael Gruhn [LOSER]", juce::dontSendNotification);
+                                            loserLabel.setJustificationType (juce::Justification::left);
+                                            addAndMakeVisible (loserLabel);
+
+                                            thanksLabel.setText ("Special thanks to them for their effort\nand contribution to the audio community",
+                                                                juce::dontSendNotification);
+                                            thanksLabel.setJustificationType (juce::Justification::centred);
+                                            addAndMakeVisible (thanksLabel);
+                                        }
+
+                                        void resized() override
+                                        {
+                                            auto bounds = getLocalBounds().reduced (10);
+                                            int y = 0;
+
+                                            // Logo
+                                            if (logoImage.getImage().isValid())
+                                            {
+                                                float scale = juce::jmin (400.0f / logoImage.getImage().getWidth(), 1.0f);
+                                                int logoHeight = static_cast<int> (logoImage.getImage().getHeight() * scale);
+                                                logoImage.setBounds (bounds.removeFromTop (logoHeight));
+                                                bounds.removeFromTop (10);
+                                            }
+
+                                            // Info
+                                            infoLabel.setBounds (bounds.removeFromTop (35));
+                                            bounds.removeFromTop (5);
+
+                                            // KuramaSound link
+                                            kuramaLink->setBounds (bounds.removeFromTop (20).withSizeKeepingCentre (150, 20));
+                                            bounds.removeFromTop (2);
+
+                                            // Support link
+                                            supportLink->setBounds (bounds.removeFromTop (20).withSizeKeepingCentre (180, 20));
+                                            bounds.removeFromTop (5);
+
+                                            // Credits
+                                            creditsLabel.setBounds (bounds.removeFromTop (80));
+                                            bounds.removeFromTop (5);
+
+                                            // Thanks links - aligned left with minimal spacing
+                                            auto thanksArea = bounds.removeFromTop (70);
+                                            auto linkColumn = thanksArea.withSizeKeepingCentre (200, 70);
+
+                                            airwindowsLink->setBounds (linkColumn.removeFromTop (20).removeFromLeft(80));
+                                            linkColumn.removeFromTop(1);
+                                            jclonesLink->setBounds(linkColumn.removeFromTop(20).removeFromLeft(55));
+                                            linkColumn.removeFromTop (1);
+                                            loserLabel.setBounds (linkColumn.removeFromTop (20).removeFromLeft(155));
+                                            bounds.removeFromTop (5);
+
+                                            // Thanks
+                                            thanksLabel.setBounds (bounds.removeFromTop (40));
+                                        }
+
+                                    private:
+                                        juce::ImageComponent logoImage;
+                                        juce::Label infoLabel, creditsLabel, loserLabel, thanksLabel;
+                                        std::unique_ptr<juce::HyperlinkButton> kuramaLink, supportLink, airwindowsLink, jclonesLink;
+                                    };
+
+                                    auto* content = new AboutContent (bannerLogoImage);
+                                    content->setSize (450, 450);
+
+                                    // Create dialog window
+                                    juce::DialogWindow::LaunchOptions options;
+                                    options.content.setOwned (content);
+                                    options.dialogTitle = "About AnalogChannel";
+                                    options.dialogBackgroundColour = juce::Colour (0xff2d3436);
+                                    options.escapeKeyTriggersCloseButton = true;
+                                    options.useNativeTitleBar = true;
+                                    options.resizable = false;
+                                    options.launchAsync();
+
                                     break;
                                 }
 

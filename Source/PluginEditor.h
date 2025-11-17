@@ -97,6 +97,10 @@ private:
     // Menu button in header
     juce::TextButton menuButton;
 
+    // Logo images
+    juce::Image faviconImage;
+    juce::Image bannerLogoImage;
+
     // Current zoom scale (0.75, 1.0, 1.25, 1.5)
     float currentZoomScale = 1.0f;
 
