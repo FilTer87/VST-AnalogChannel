@@ -6,200 +6,269 @@
     <title>KuramaSound|AnalogChannel - Characterful channel strip plugin</title>
     <meta name="description" content="Free professional channel strip VST3 plugin for mixing engineers">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            color: #2d3748;
-        }
-        
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        background: #1a1a1a;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        color: #e2e8f0;
+    }
+    
+    .container {
+        max-width: 700px;
+        width: 100%;
+        background: linear-gradient(135deg, #2d2d2d 0%, #1f1f1f 100%);
+        padding: 50px 40px;
+        border-radius: 20px;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+        border: 1px solid #3a3a3a;
+    }
+    
+    .logo {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+    
+    .logo img {
+        max-width: 200px;
+        height: auto;
+    }
+    
+    h1 {
+        font-size: 48px;
+        margin-bottom: 10px;
+        text-align: center;
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        font-weight: 700;
+    }
+    
+    .tagline {
+        font-size: 18px;
+        color: #9ca3af;
+        text-align: center;
+        margin-bottom: 30px;
+        font-weight: 400;
+    }
+    
+    .plugin-screenshot {
+        margin: 30px 0;
+        border-radius: 12px;
+        overflow: hidden;
+        border: 2px solid #3a3a3a;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+    
+    .plugin-screenshot img {
+        width: 100%;
+        height: auto;
+        display: block;
+    }
+    
+    form {
+        margin-bottom: 30px;
+    }
+    
+    .form-group {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+    }
+    
+    input[type="email"] {
+        flex: 1;
+        padding: 15px 20px;
+        border: 2px solid #3a3a3a;
+        background: #2d2d2d;
+        color: #e2e8f0;
+        border-radius: 10px;
+        font-size: 16px;
+        transition: all 0.3s;
+    }
+    
+    input[type="email"]:focus {
+        outline: none;
+        border-color: #f59e0b;
+        background: #262626;
+        box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
+    }
+    
+    input[type="email"]::placeholder {
+        color: #6b7280;
+    }
+    
+    button {
+        padding: 15px 35px;
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        color: #1a1a1a;
+        border: none;
+        border-radius: 10px;
+        font-size: 16px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.3s;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(245, 158, 11, 0.4);
+        background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+    }
+    
+    button:active {
+        transform: translateY(0);
+    }
+    
+    .success-message {
+        display: none;
+        padding: 20px;
+        background: linear-gradient(135deg, #065f46 0%, #047857 100%);
+        color: #d1fae5;
+        border-radius: 12px;
+        margin-bottom: 20px;
+        text-align: center;
+        border: 1px solid #10b981;
+        font-weight: 600;
+    }
+    
+    .links {
+        display: none; /* Hidden by default */
+        gap: 15px;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-top: 20px;
+        padding-top: 20px;
+        border-top: 1px solid #3a3a3a;
+    }
+    
+    .links.show {
+        display: flex; /* Show after email submission */
+    }
+    
+    .links a {
+        color: #f59e0b;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 16px;
+        padding: 12px 24px;
+        border: 2px solid #f59e0b;
+        border-radius: 10px;
+        transition: all 0.3s;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .links a:hover {
+        background: #f59e0b;
+        color: #1a1a1a;
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(245, 158, 11, 0.3);
+    }
+    
+    .features {
+        margin-top: 40px;
+        padding-top: 40px;
+        border-top: 1px solid #3a3a3a;
+    }
+    
+    .features h2 {
+        font-size: 28px;
+        margin-bottom: 25px;
+        text-align: center;
+        color: #f59e0b;
+        font-weight: 700;
+    }
+    
+    .features ul {
+        list-style: none;
+        display: grid;
+        gap: 12px;
+    }
+    
+    .features li {
+        padding: 14px 0;
+        color: #d1d5db;
+        font-size: 16px;
+        display: flex;
+        align-items: center;
+        line-height: 1.5;
+    }
+    
+    .features li:before {
+        content: "✓";
+        color: #1a1a1a;
+        font-weight: bold;
+        font-size: 18px;
+        margin-right: 15px;
+        width: 28px;
+        height: 28px;
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+    
+    .privacy-note {
+        text-align: center;
+        font-size: 14px;
+        color: #6b7280;
+        margin-top: 15px;
+    }
+    
+    @media (max-width: 600px) {
         .container {
-            max-width: 600px;
-            width: 100%;
-            background: white;
-            padding: 50px 40px;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 40px 25px;
         }
         
         h1 {
-            font-size: 48px;
-            margin-bottom: 10px;
-            text-align: center;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            font-size: 36px;
         }
         
-        .tagline {
-            font-size: 18px;
-            color: #718096;
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        
-        form {
-            margin-bottom: 30px;
+        .logo img {
+            max-width: 150px;
         }
         
         .form-group {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-        
-        input[type="email"] {
-            flex: 1;
-            padding: 15px 20px;
-            border: 2px solid #e2e8f0;
-            border-radius: 10px;
-            font-size: 16px;
-            transition: border-color 0.3s;
-        }
-        
-        input[type="email"]:focus {
-            outline: none;
-            border-color: #667eea;
+            flex-direction: column;
         }
         
         button {
-            padding: 15px 35px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
+            width: 100%;
         }
-        
-        button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
-        }
-        
-        button:active {
-            transform: translateY(0);
-        }
-        
-        .success-message {
-            display: none;
-            padding: 15px;
-            background: #c6f6d5;
-            color: #22543d;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-        
-        .links {
-            display: flex;
-            gap: 20px;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin-top: 30px;
-            padding-top: 30px;
-            border-top: 1px solid #e2e8f0;
-        }
-        
-        .links a {
-            color: #667eea;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 16px;
-            padding: 10px 20px;
-            border: 2px solid #667eea;
-            border-radius: 10px;
-            transition: all 0.3s;
-        }
-        
-        .links a:hover {
-            background: #667eea;
-            color: white;
-            transform: translateY(-2px);
-        }
-        
-        .features {
-            margin-top: 40px;
-            padding-top: 40px;
-            border-top: 1px solid #e2e8f0;
-        }
-        
-        .features h2 {
-            font-size: 24px;
-            margin-bottom: 20px;
-            text-align: center;
-            color: #2d3748;
-        }
-        
-        .features ul {
-            list-style: none;
-            display: grid;
-            gap: 12px;
-        }
-        
-        .features li {
-            padding: 12px 0;
-            color: #4a5568;
-            font-size: 16px;
-            display: flex;
-            align-items: center;
-        }
-        
-        .features li:before {
-            content: "✓";
-            color: #667eea;
-            font-weight: bold;
-            font-size: 20px;
-            margin-right: 12px;
-            width: 24px;
-            height: 24px;
-            background: #e6f0ff;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-        }
-        
-        @media (max-width: 600px) {
-            .container {
-                padding: 40px 25px;
-            }
-            
-            h1 {
-                font-size: 36px;
-            }
-            
-            .form-group {
-                flex-direction: column;
-            }
-            
-            button {
-                width: 100%;
-            }
-        }
-    </style>
+    }
+</style>
 </head>
 <body>
     <div class="container">
-        <h1>KuramaSound | AnalogChannel</h1>
+        <div class="logo">
+            <img src="Docs/images/logos/logo_banner.png" alt="Kurama Sound Logo">
+        </div>
+        
+        <h2>KuramaSound | AnalogChannel</h2>
         <p class="tagline">a VST3 channel strip plugin designed for mixing engineers who demand fast and characterful results in their workflow</p>
+
+        <div class="plugin-screenshot">
+            <img src="Docs/images/manual/analog-channel_full.png" alt="AnalogChannel Plugin Interface">
+        </div>
         
         <div class="success-message" id="successMessage">
-            ✓ Thank you! Download the plugin from the following link!
+            ✓ Thank you! You'll receive updates via email. Download the plugin below!
         </div>
         
         <form action="https://formspree.io/f/mpwbqjag" method="POST" id="emailForm">
@@ -217,13 +286,13 @@
             </p>
         </form>
         
-        <div class="links">
+        <div class="links" id="downloadLinks">
             <a href="https://github.com/FilTer87/VST-AnalogChannel/releases" target="_blank">📦 Downlod AnalogChannel</a>
             <a href="https://buymeacoffee.com/oz3watvqah" target="_blank">☕ Support</a>
         </div>
         
         <div class="features">
-            <h2>Key features:</h2>
+            <h3>Key features:</h3>
             <ul>
                 <li>8 Processing sections with carefully limited controls, for fast and colorful results</li>
                 <li>Channel Variation System - Emulates natural component tolerances in analog consoles with 48 unique channel presets</li>
@@ -241,6 +310,7 @@
         // Handle form submission
         const form = document.getElementById('emailForm');
         const successMessage = document.getElementById('successMessage');
+        const downloadLinks = document.getElementById('downloadLinks');
         
         form.addEventListener('submit', function(e) {
             e.preventDefault();
@@ -256,14 +326,14 @@
             }).then(response => {
                 if (response.ok) {
                     successMessage.style.display = 'block';
-                    form.reset();
-                    // Scroll to success message
+                    downloadLinks.classList.add('show'); // MOSTRA I LINK
+                    form.style.display = 'none'; // NASCONDI IL FORM
                     successMessage.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
                 } else {
-                    alert('Oops! Something gone wrong. Try again.');
+                    alert('Oops! There was a problem. Please try again.');
                 }
             }).catch(error => {
-                alert('Oops! Something gone wrong. Try again.');
+                alert('Oops! There was a problem. Please try again.');
             });
         });
     </script>
