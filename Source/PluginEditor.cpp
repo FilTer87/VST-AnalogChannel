@@ -1,4 +1,4 @@
-/*
+﻿/*
   ==============================================================================
 
     PluginEditor.cpp
@@ -270,7 +270,7 @@ void AnalogChannelAudioProcessorEditor::showOptionsMenu()
                             switch (result)
                             {
                                 case 1:  // User Manual
-                                    juce::URL ("https://github.com/FilTer87/VST-AnalogChannel/Docs/UserManual.md").launchInDefaultBrowser();
+                                    juce::URL ("https://github.com/FilTer87/VST-AnalogChannel/blob/main/Docs/UserManual.md").launchInDefaultBrowser();
                                     break;
 
                                 case 2:  // About / Credits
@@ -290,7 +290,7 @@ void AnalogChannelAudioProcessorEditor::showOptionsMenu()
                                             }
 
                                             // Text labels
-                                            infoLabel.setText ("AnalogChannel v0.4\nVST3 Channel Strip Plugin by Filippo Terenzi",
+                                            infoLabel.setText ("AnalogChannel v0.4.1\nVST3 Channel Strip Plugin by Filippo Terenzi",
                                                               juce::dontSendNotification);
                                             infoLabel.setJustificationType (juce::Justification::centred);
                                             addAndMakeVisible (infoLabel);

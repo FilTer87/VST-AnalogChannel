@@ -1,7 +1,7 @@
-# AnalogChannel VST3 Channel Strip
+﻿# AnalogChannel VST3 Channel Strip
 ## User Manual
 
-**Version 0.4**
+**Version 0.4.1**
 **Copyright © 2025 KuramaSound**
 **Author: Filippo Terenzi**
 
@@ -1093,7 +1093,7 @@ AnalogChannel has **three saturation stages** that can be stacked for complex ha
 ### Plugin Information
 
 - **Plugin Name**: AnalogChannel
-- **Version**: 0.4
+- **Version**: 0.4.1
 - **Company**: KuramaSound di Filippo Terenzi
 - **Author**: Filippo Terenzi
 - **Plugin Format**: VST3
@@ -1117,7 +1117,7 @@ AnalogChannel has **three saturation stages** that can be stacked for complex ha
 
 ### Performance
 
-- **CPU Usage**: Approximately 0.2-0.4% per instance on modern CPUs (tested at 44.1 kHz, 512-sample buffer)
+- **CPU Usage**: Approximately 0.1-0.5% per instance on modern CPUs (tested at 44.1 kHz, 512-sample buffer), depending on selected emulations
   - CPU usage scales with sample rate and buffer size
   - Bypassed sections stop processing after crossfade (efficient)
 - **Memory Usage**: Minimal—pre-allocated buffers, no dynamic allocation during processing
@@ -1241,7 +1241,7 @@ AnalogChannel is built with the **JUCE Framework** (C++ library for audio applic
 
 AnalogChannel is open-source. The full source code is available on GitHub:
 
-**Repository**: [https://github.com/FilTer87/VST-AnalogChannel](https://github.com/FilTer87/VST-AnalogChannel) *(replace with actual GitHub URL)*
+**Repository**: [https://github.com/FilTer87/VST-AnalogChannel](https://github.com/FilTer87/VST-AnalogChannel)
 
 ### Feedback and Support
 
@@ -1255,4 +1255,4 @@ AnalogChannel is open-source. The full source code is available on GitHub:
 
 ---
 
-*AnalogChannel User Manual v0.4 | Copyright © 2025 KuramaSound | Filippo Terenzi*
+*AnalogChannel User Manual v0.4.1 | Copyright © 2025 KuramaSound | Filippo Terenzi*
