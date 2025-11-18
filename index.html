@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KuramaSound|AnalogChannel - Characterful channel strip plugin</title>
+    <meta name="description" content="Free professional channel strip VST3 plugin for mixing engineers">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: #2d3748;
+        }
+        
+        .container {
+            max-width: 600px;
+            width: 100%;
+            background: white;
+            padding: 50px 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        h1 {
+            font-size: 48px;
+            margin-bottom: 10px;
+            text-align: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .tagline {
+            font-size: 18px;
+            color: #718096;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        form {
+            margin-bottom: 30px;
+        }
+        
+        .form-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        input[type="email"] {
+            flex: 1;
+            padding: 15px 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        input[type="email"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        button {
+            padding: 15px 35px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        .success-message {
+            display: none;
+            padding: 15px;
+            background: #c6f6d5;
+            color: #22543d;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .links {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 1px solid #e2e8f0;
+        }
+        
+        .links a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 16px;
+            padding: 10px 20px;
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            transition: all 0.3s;
+        }
+        
+        .links a:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        .features {
+            margin-top: 40px;
+            padding-top: 40px;
+            border-top: 1px solid #e2e8f0;
+        }
+        
+        .features h2 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            text-align: center;
+            color: #2d3748;
+        }
+        
+        .features ul {
+            list-style: none;
+            display: grid;
+            gap: 12px;
+        }
+        
+        .features li {
+            padding: 12px 0;
+            color: #4a5568;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .features li:before {
+            content: "✓";
+            color: #667eea;
+            font-weight: bold;
+            font-size: 20px;
+            margin-right: 12px;
+            width: 24px;
+            height: 24px;
+            background: #e6f0ff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                padding: 40px 25px;
+            }
+            
+            h1 {
+                font-size: 36px;
+            }
+            
+            .form-group {
+                flex-direction: column;
+            }
+            
+            button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>KuramaSound | AnalogChannel</h1>
+        <p class="tagline">a VST3 channel strip plugin designed for mixing engineers who demand fast and characterful results in their workflow</p>
+        
+        <div class="success-message" id="successMessage">
+            ✓ Thank you! Download the plugin from the following link!
+        </div>
+        
+        <form action="https://formspree.io/f/mpwbqjag" method="POST" id="emailForm">
+            <div class="form-group">
+                <input 
+                    type="email" 
+                    name="email" 
+                    placeholder="Your e-mail" 
+                    required
+                >
+                <button type="submit">Subscribe</button>
+            </div>
+            <p style="text-align: center; font-size: 14px; color: #718096;">
+                You will only receive important updates. No spam.
+            </p>
+        </form>
+        
+        <div class="links">
+            <a href="https://github.com/FilTer87/VST-AnalogChannel/releases" target="_blank">📦 Downlod AnalogChannel</a>
+            <a href="https://buymeacoffee.com/oz3watvqah" target="_blank">☕ Support</a>
+        </div>
+        
+        <div class="features">
+            <h2>Key features:</h2>
+            <ul>
+                <li>8 Processing sections with carefully limited controls, for fast and colorful results</li>
+                <li>Channel Variation System - Emulates natural component tolerances in analog consoles with 48 unique channel presets</li>
+                <li>Independent section Bypass with resource optimization</li>
+                <li>Flexible Signal Routing</li>
+                <li>Full DAW Automation</li>
+                <li>Zero Latency</li>
+                <li>Full DAW Automation</li>
+                <li>100% Free & Open Source</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Handle form submission
+        const form = document.getElementById('emailForm');
+        const successMessage = document.getElementById('successMessage');
+        
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(form);
+            
+            fetch(form.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'Accept': 'application/json'
+                }
+            }).then(response => {
+                if (response.ok) {
+                    successMessage.style.display = 'block';
+                    form.reset();
+                    // Scroll to success message
+                    successMessage.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                } else {
+                    alert('Oops! Something gone wrong. Try again.');
+                }
+            }).catch(error => {
+                alert('Oops! Something gone wrong. Try again.');
+            });
+        });
+    </script>
+</body>
+</html>
