@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="Docs/images/logos/favicon-32x32.png" type="image/png">
+    <title>AnalogChannel | KuramaSound</title>
+    <meta name="description" content="Free professional channel strip VST3 plugin for characterful mix">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #1a1a1a;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: #e2e8f0;
+        }
+
+        .container {
+            max-width: 700px;
+            width: 100%;
+            background: linear-gradient(135deg, #2d2d2d 0%, #1f1f1f 100%);
+            padding: 50px 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            border: 1px solid #3a3a3a;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo img {
+            max-width: 200px;
+            height: auto;
+        }
+
+        h1 {
+            font-size: 48px;
+            margin-bottom: 10px;
+            text-align: center;
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+        }
+
+        .tagline {
+            font-size: 18px;
+            color: #9ca3af;
+            text-align: center;
+            margin-bottom: 30px;
+            font-weight: 400;
+        }
+
+        .plugin-screenshot {
+            margin: 30px 0;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 2px solid #3a3a3a;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .plugin-screenshot img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .download-section {
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        .download-btn {
+            display: inline-block;
+            padding: 18px 50px;
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: #1a1a1a;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            text-decoration: none;
+        }
+
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(245, 158, 11, 0.4);
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+        }
+
+        .download-btn:active {
+            transform: translateY(0);
+        }
+
+        .download-note {
+            text-align: center;
+            font-size: 14px;
+            color: #6b7280;
+            margin-top: 15px;
+        }
+
+        .features {
+            margin-top: 40px;
+            padding-top: 40px;
+            border-top: 1px solid #3a3a3a;
+        }
+
+        .features h3 {
+            font-size: 28px;
+            margin-bottom: 25px;
+            text-align: center;
+            color: #f59e0b;
+            font-weight: 700;
+        }
+
+        .features ul {
+            list-style: none;
+            display: grid;
+            gap: 12px;
+        }
+
+        .features li {
+            padding: 14px 0;
+            color: #d1d5db;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            line-height: 1.5;
+        }
+
+        .features li:before {
+            content: "✓";
+            color: #1a1a1a;
+            font-weight: bold;
+            font-size: 18px;
+            margin-right: 15px;
+            width: 28px;
+            height: 28px;
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 40px 25px;
+            }
+
+            h1 {
+                font-size: 36px;
+            }
+
+            .logo img {
+                max-width: 150px;
+            }
+
+            .download-btn {
+                width: 100%;
+                padding: 15px 30px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="logo">
+            <img src="Docs/images/logos/logo_banner.png" alt="Kurama Sound Logo">
+        </div>
+
+        <h1>AnalogChannel</h1>
+        <p class="tagline">a VST3 channel strip plugin designed for mixing engineers who demand fast and
+            characterful results in their workflow</p>
+
+        <div class="plugin-screenshot">
+            <img src="Docs/images/manual/analog-channel_full.png" alt="AnalogChannel Plugin Interface">
+        </div>
+
+        <div class="download-section">
+            <a href="https://buymeacoffee.com/oz3watvqah/e/480136" target="_blank" class="download-btn">Free
+                Download</a>
+            <p class="download-note">100% Free - Support is optional but appreciated :)</p>
+        </div>
+
+        <div class="features">
+            <h3>Key features:</h3>
+            <ul>
+                <li>8 Processing sections with carefully limited controls, for fast and colorful results</li>
+                <li>Channel Variation System - Emulates natural component tolerances in analog consoles with 48
+                    unique channel presets</li>
+                <li>Dual-Mono Architecture</li>
+                <li>Independent section Bypass with resource optimization</li>
+                <li>Flexible Signal Routing</li>
+                <li>Full DAW Automation</li>
+                <li>Zero Latency</li>
+                <li>100% Free & Open Source</li>
+            </ul>
+        </div>
+    </div>
+</body>
+
+</html>
