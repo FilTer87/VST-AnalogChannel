@@ -71,12 +71,12 @@ $filesToUpdate = @(
         Replacement = $Version
         Description = "User Manual - Footer (line 1258)"
     },
-    # InternalDocs/README_Release.txt - Line 4 (header)
+    # README.txt - Line 4 (header)
     @{
-        Path = "InternalDocs\README_Release.txt"
+        Path = "README.txt"
         Pattern = '(?<=Version )[0-9]+\.[0-9]+(\.[0-9]+)?'
         Replacement = $Version
-        Description = "README_Release.txt - Header (line 4)"
+        Description = "README.txt - Header (line 4)"
     },
     # Source/PluginEditor.cpp - Line 293 (infoLabel.setText)
     @{

@@ -1,4 +1,4 @@
-﻿/*
+/*
   ==============================================================================
 
     PluginEditor.cpp
@@ -290,7 +290,7 @@ void AnalogChannelAudioProcessorEditor::showOptionsMenu()
                                             }
 
                                             // Text labels
-                                            infoLabel.setText ("AnalogChannel v0.4.1\nVST3 Channel Strip Plugin by Filippo Terenzi",
+                                            infoLabel.setText ("AnalogChannel v0.5.0\nVST3 Channel Strip Plugin by Filippo Terenzi",
                                                               juce::dontSendNotification);
                                             infoLabel.setJustificationType (juce::Justification::centred);
                                             addAndMakeVisible (infoLabel);

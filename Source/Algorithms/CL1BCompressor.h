@@ -245,8 +245,8 @@ private:
             sign = -1.0f;
         }
 
-        float M_LN2 = std::log(2.0f);
-        exp_out = (int)std::ceil(std::log(x) / M_LN2);
+        static const float ln2_val = 0.69314718055994530942f; // log(2)
+        exp_out = (int)std::ceil(std::log(x) / ln2_val);
 
         float a1 = x / std::pow(2.0f, (float)exp_out);
 
