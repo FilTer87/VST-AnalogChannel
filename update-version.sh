@@ -36,9 +36,8 @@ if [ -z "$VERSION" ]; then
         exit 1
     fi
 
-    # Extract version from JUCERPROJECT tag
-    VERSION=$(grep -oP '(?<=<JUCERPROJECT)[^>]+version="\K[^"]+' "$JUCER_PATH" 2>/dev/null || \
-              perl -ne 'print $1 if /<JUCERPROJECT[^>]+version="([^"]+)"/' "$JUCER_PATH")
+    # Extract version from JUCERPROJECT tag (multi-line aware)
+    VERSION=$(perl -0777 -ne 'print $1 if /<JUCERPROJECT[^>]*version="([^"]+)"/s' "$JUCER_PATH")
 
     if [ -z "$VERSION" ]; then
         echo -e "${RED}ERROR: Could not find version in JUCERPROJECT tag!${NC}"
@@ -116,12 +115,12 @@ update_file \
     "$VERSION" \
     "User Manual - Footer (line 1258)"
 
-# Update InternalDocs/README_Release.txt - Header (line 4)
+# Update README.txt - Header (line 4)
 update_file \
-    "InternalDocs/README_Release.txt" \
+    "README.txt" \
     '(?<=Version )[0-9]+\.[0-9]+(\.[0-9]+)?' \
     "$VERSION" \
-    "README_Release.txt - Header (line 4)"
+    "README.txt - Header (line 4)"
 
 # Update Source/PluginEditor.cpp - About dialog (line 293)
 update_file \
