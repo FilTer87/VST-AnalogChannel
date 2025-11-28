@@ -269,10 +269,14 @@ if ($pandocInstalled) {
         $before + $after | Set-Content "$TempDir\UserManual.md"
 
         # Generate PDF with platform-specific fonts
-        Push-Location $TempDir
-        $pdfOutput = "$ReleaseDir\AnalogChannel_UserManual.pdf"
+        # Convert to absolute path BEFORE changing directory
+        $pdfOutput = Join-Path (Get-Location) "$ReleaseDir\AnalogChannel_UserManual.pdf"
+        $pdfOutput = [System.IO.Path]::GetFullPath($pdfOutput)
 
-        & pandoc .\UserManual.md -o $pdfOutput `
+        Push-Location $TempDir
+
+        # Redirect pandoc output to suppress warnings (they're informational only)
+        $pandocOutput = & pandoc .\UserManual.md -o $pdfOutput `
             --pdf-engine=xelatex `
             --toc `
             --toc-depth=3 `
@@ -282,15 +286,25 @@ if ($pandocInstalled) {
             -V monofont="Consolas" `
             -V fontsize=11pt `
             -V linkcolor=blue `
-            --highlight-style=tango 2>&1
+            --syntax-highlighting=tango 2>&1
 
         Pop-Location
 
-        if ($LASTEXITCODE -eq 0 -and (Test-Path $pdfOutput)) {
+        # Small delay to ensure file is written to disk
+        Start-Sleep -Milliseconds 100
+
+        # Check if PDF was actually created (ignore exit code, pandoc returns non-zero on warnings)
+        if (Test-Path $pdfOutput) {
             $pdfSize = "{0:N2} KB" -f ((Get-Item $pdfOutput).Length / 1KB)
             Write-Color "  [OK] PDF manual generated: AnalogChannel_UserManual.pdf ($pdfSize)" "Green"
+
+            # Show warnings if there were any, but don't fail
+            if ($LASTEXITCODE -ne 0) {
+                Write-Color "  [INFO] Pandoc reported warnings (PDF created successfully anyway)" "Yellow"
+            }
         } else {
-            Write-Color "  [ERROR] PDF generation failed! Check pandoc output above." "Red"
+            Write-Color "  [ERROR] PDF generation failed! Check pandoc output:" "Red"
+            Write-Host $pandocOutput
             Write-Color "  Manual must be generated manually." "Yellow"
             Write-Color "  See: InternalDocs\Generate_PDF_manual.md" "Yellow"
         }

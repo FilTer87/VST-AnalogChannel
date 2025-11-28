@@ -1,4 +1,4 @@
-﻿# AnalogChannel VST3 Channel Strip
+# AnalogChannel VST3 Channel Strip
 ## User Manual
 
 **Version 0.5.0**
