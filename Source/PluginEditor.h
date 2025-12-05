@@ -39,6 +39,7 @@
 #include "GUI/ConsoleSectionComponent.h"
 #include "GUI/AnalogChannelsSectionComponent.h"
 #include "GUI/VolumeSectionComponent.h"
+#include "GUI/Common/PluginHeaderBar.h"
 
 //==============================================================================
 /**
@@ -62,8 +63,9 @@ private:
     // Timer callback for updating meters
     void timerCallback() override;
 
-    // Menu button callback
-    void showOptionsMenu();
+    // Menu callbacks
+    void populateMenu (juce::PopupMenu& menu);
+    void handleMenuResult (int result);
 
     // Apply zoom scale to plugin window
     void applyZoomScale (float scale);
@@ -77,6 +79,9 @@ private:
 
     // Custom Look & Feel
     AnalogChannelLookAndFeel AnalogChannelLAF;
+
+    // Header bar (reusable component)
+    PluginHeaderBar headerBar;
 
     // Peak Meters (input/output, L/R)
     PeakMeter inputMeterLeft, inputMeterRight;
@@ -94,11 +99,7 @@ private:
     AnalogChannelsSectionComponent analogChannelsSection;
     VolumeSectionComponent volumeSection;
 
-    // Menu button in header
-    juce::TextButton menuButton;
-
-    // Logo images
-    juce::Image faviconImage;
+    // Logo image for About dialog
     juce::Image bannerLogoImage;
 
     // Current zoom scale (0.75, 1.0, 1.25, 1.5)

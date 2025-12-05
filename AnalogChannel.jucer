@@ -4,7 +4,7 @@
               addUsingNamespaceToJuceHeader="0" jucerFormatVersion="1" pluginFormats="buildAU,buildVST3"
               companyName="KuramaSound" companyWebsite="kuramasound.com" companyEmail="filippo@kuramasound.com"
               pluginVST3Category="Distortion,Dynamics,EQ,Filter,Fx,Stereo,Tools"
-              version="0.5.0">
+              version="0.5.1">
   <MAINGROUP id="V9J31M" name="AnalogChannel">
     <GROUP id="{0492BA0B-A712-A6CE-6D1C-7E503B217B54}" name="Source">
       <GROUP id="{EE3BC7E5-7AB5-6AEE-F5EA-B789385DB554}" name="Algorithms">
@@ -25,6 +25,13 @@
         <FILE id="hIWcxo" name="Tube2.h" compile="0" resource="0" file="Source/Algorithms/Tube2.h"/>
       </GROUP>
       <GROUP id="{C0D9DE04-5888-814F-C166-D9F2654BDDEA}" name="GUI">
+        <GROUP id="{E5364DDD-6EEB-4571-365B-C0BD2D6303D5}" name="Common">
+          <FILE id="KuKu1o" name="KuramaColors.h" compile="0" resource="0" file="Source/GUI/Common/KuramaColors.h"/>
+          <FILE id="UCuGkH" name="PluginHeaderBar.cpp" compile="1" resource="0"
+                file="Source/GUI/Common/PluginHeaderBar.cpp"/>
+          <FILE id="UcsEq0" name="PluginHeaderBar.h" compile="0" resource="0"
+                file="Source/GUI/Common/PluginHeaderBar.h"/>
+        </GROUP>
         <FILE id="IbIlm8" name="AnalogChannelLookAndFeel.h" compile="0" resource="0"
               file="Source/GUI/AnalogChannelLookAndFeel.h"/>
         <FILE id="xJMikg" name="AnalogChannelsSectionComponent.h" compile="0"
@@ -94,6 +101,8 @@
     <MODULE id="juce_audio_plugin_client" showAllCode="1" useLocalCopy="0"
             useGlobalPath="1"/>
     <MODULE id="juce_audio_processors" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_audio_processors_headless" showAllCode="1" useLocalCopy="0"
+            useGlobalPath="1"/>
     <MODULE id="juce_core" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
     <MODULE id="juce_data_structures" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
     <MODULE id="juce_dsp" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
@@ -122,6 +131,7 @@
         <MODULEPATH id="juce_graphics"/>
         <MODULEPATH id="juce_gui_basics"/>
         <MODULEPATH id="juce_gui_extra"/>
+        <MODULEPATH id="juce_audio_processors_headless" path="../../Users/ACER/JUCE/modules"/>
       </MODULEPATHS>
     </VS2022>
     <XCODE_MAC targetFolder="Builds/MacOSX">
@@ -142,6 +152,7 @@
         <MODULEPATH id="juce_graphics"/>
         <MODULEPATH id="juce_gui_basics"/>
         <MODULEPATH id="juce_gui_extra"/>
+        <MODULEPATH id="juce_audio_processors_headless" path="../../Users/ACER/JUCE/modules"/>
       </MODULEPATHS>
     </XCODE_MAC>
   </EXPORTFORMATS>
