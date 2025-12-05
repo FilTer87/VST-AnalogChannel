@@ -49,6 +49,19 @@ AnalogChannelAudioProcessorEditor::AnalogChannelAudioProcessorEditor (AnalogChan
     headerBar.setMenuResultCallback ([this] (int result) { handleMenuResult (result); });
     addAndMakeVisible (headerBar);
 
+    // Setup preset bar
+    presetBar.setPluginName ("AnalogChannel");
+    presetBar.onGetState = [this] (juce::MemoryBlock& data)
+    {
+        audioProcessor.getStateInformation (data);
+    };
+    presetBar.onSetState = [this] (const void* data, int size)
+    {
+        audioProcessor.setStateInformation (data, size);
+    };
+    presetBar.enableParameterTracking (audioProcessor.getValueTreeState());
+    addAndMakeVisible (presetBar);
+
     // Add and make visible: Peak Meters
     addAndMakeVisible (inputMeterLeft);
     addAndMakeVisible (inputMeterRight);
@@ -120,6 +133,9 @@ void AnalogChannelAudioProcessorEditor::resized()
 
     // Header bar (28px fixed height)
     headerBar.setBounds (bounds.removeFromTop (PluginHeaderBar::HEIGHT));
+
+    // Preset bar at bottom (40px height)
+    presetBar.setBounds (bounds.removeFromBottom (40));
 
     // Main area
     auto mainArea = bounds;
@@ -245,7 +261,7 @@ void AnalogChannelAudioProcessorEditor::handleMenuResult (int result)
                     }
 
                     // Text labels
-                    infoLabel.setText ("AnalogChannel v0.5.1\nVST3 Channel Strip Plugin by Filippo Terenzi",
+                    infoLabel.setText ("AnalogChannel v0.5.2\nVST3 Channel Strip Plugin by Filippo Terenzi",
                                       juce::dontSendNotification);
                     infoLabel.setJustificationType (juce::Justification::centred);
                     addAndMakeVisible (infoLabel);
@@ -386,9 +402,9 @@ void AnalogChannelAudioProcessorEditor::applyZoomScale (float scale)
 {
     currentZoomScale = scale;
 
-    // Base size is 710x580
+    // Base size: 710x624 (original 580 + 40 preset bar + 4 padding)
     const int baseWidth = 710;
-    const int baseHeight = 580;
+    const int baseHeight = 624;
 
     // IMPORTANT: We use setScaleFactor() which handles both:
     // 1. Scaling the component hierarchy
@@ -442,9 +458,9 @@ void AnalogChannelAudioProcessorEditor::parameterChanged (const juce::String& pa
                 {
                     currentZoomScale = newScale;
 
-                    // Base size is 710x580
+                    // Base size: 710x624 (original 580 + 40 preset bar + 4 padding)
                     const int baseWidth = 710;
-                    const int baseHeight = 580;
+                    const int baseHeight = 624;
 
                     // First, reset any previous transform
                     setTransform (juce::AffineTransform());

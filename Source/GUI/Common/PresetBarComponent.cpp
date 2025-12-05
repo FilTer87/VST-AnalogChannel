@@ -9,6 +9,7 @@
 */
 
 #include "PresetBarComponent.h"
+#include "KuramaColors.h"
 
 //==============================================================================
 PresetBarComponent::PresetBarComponent()
@@ -50,10 +51,23 @@ PresetBarComponent::PresetBarComponent()
 
 PresetBarComponent::~PresetBarComponent()
 {
-    // Remove parameter listener if attached
-    if (linkedAPVTS != nullptr && !masterOutputParamID.isEmpty())
+    // Remove parameter listeners
+    if (linkedAPVTS != nullptr)
     {
-        linkedAPVTS->removeParameterListener(masterOutputParamID, this);
+        // Remove master output listener
+        if (!masterOutputParamID.isEmpty())
+        {
+            linkedAPVTS->removeParameterListener(masterOutputParamID, this);
+        }
+
+        // Remove all tracked parameter listeners
+        if (parameterTrackingEnabled)
+        {
+            for (const auto& paramID : trackedParameterIDs)
+            {
+                linkedAPVTS->removeParameterListener(paramID, this);
+            }
+        }
     }
 }
 
@@ -110,6 +124,26 @@ void PresetBarComponent::updatePresetDisplay()
 }
 
 //==============================================================================
+// Parameter Tracking
+
+void PresetBarComponent::enableParameterTracking(juce::AudioProcessorValueTreeState& apvts)
+{
+    parameterTrackingEnabled = true;
+    linkedAPVTS = &apvts;
+
+    // Get all parameter IDs from the APVTS
+    for (auto* param : apvts.processor.getParameters())
+    {
+        if (auto* paramWithID = dynamic_cast<juce::AudioProcessorParameterWithID*>(param))
+        {
+            juce::String paramID = paramWithID->paramID;
+            trackedParameterIDs.add(paramID);
+            apvts.addParameterListener(paramID, this);
+        }
+    }
+}
+
+//==============================================================================
 // Master Output
 
 void PresetBarComponent::enableMasterOutput(juce::AudioProcessorValueTreeState& apvts,
@@ -118,7 +152,11 @@ void PresetBarComponent::enableMasterOutput(juce::AudioProcessorValueTreeState& 
                                            float maxDb)
 {
     masterOutputEnabled = true;
-    linkedAPVTS = &apvts;
+
+    // Only set linkedAPVTS if not already set by enableParameterTracking
+    if (linkedAPVTS == nullptr)
+        linkedAPVTS = &apvts;
+
     masterOutputParamID = parameterID;
 
     // Configure slider range
@@ -128,8 +166,9 @@ void PresetBarComponent::enableMasterOutput(juce::AudioProcessorValueTreeState& 
     masterOutputAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(
         apvts, parameterID, masterOutputSlider);
 
-    // Add parameter listener for unsaved changes tracking
-    apvts.addParameterListener(parameterID, this);
+    // Add parameter listener for unsaved changes tracking (only if not already tracked)
+    if (!parameterTrackingEnabled)
+        apvts.addParameterListener(parameterID, this);
 
     // Show components
     addAndMakeVisible(masterOutputLabel);
@@ -226,8 +265,15 @@ void PresetBarComponent::resized()
 
 void PresetBarComponent::paint(juce::Graphics& g)
 {
-    // Optional: draw background or border if needed
-    g.fillAll(getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
+    auto bounds = getLocalBounds();
+
+    // Background - same color as header bar
+    g.setColour(KuramaColors::HEADER_BG);
+    g.fillRect(bounds);
+
+    // Top border
+    g.setColour(KuramaColors::HEADER_BORDER);
+    g.drawLine(0, 0, getWidth(), 0, 1.0f);
 }
 
 //==============================================================================
@@ -378,9 +424,17 @@ void PresetBarComponent::loadPreset(const juce::String& presetName)
         juce::MemoryBlock stateData;
         if (presetFile.loadFileAsData(stateData))
         {
+            // Temporarily disable change tracking to avoid marking as unsaved during load
+            bool wasTracking = parameterTrackingEnabled;
+            parameterTrackingEnabled = false;
+
             onSetState(stateData.getData(), static_cast<int>(stateData.getSize()));
             currentPresetName = presetName;
             hasUnsavedChanges = false;
+
+            // Re-enable tracking
+            parameterTrackingEnabled = wasTracking;
+
             updatePresetDisplay();
         }
     }

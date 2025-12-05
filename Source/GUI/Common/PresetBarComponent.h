@@ -58,6 +58,12 @@ public:
     //==============================================================================
     // MASTER OUTPUT (optional)
 
+    /**
+     * Enable tracking of all APVTS parameters for unsaved changes detection.
+     * Call this to monitor all parameter changes and show asterisk (*) when modified.
+     */
+    void enableParameterTracking(juce::AudioProcessorValueTreeState& apvts);
+
     /** Enable master output slider linked to APVTS parameter */
     void enableMasterOutput(juce::AudioProcessorValueTreeState& apvts,
                            const juce::String& parameterID,
@@ -99,6 +105,10 @@ private:
     std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> masterOutputAttachment;
     juce::AudioProcessorValueTreeState* linkedAPVTS = nullptr;
     juce::String masterOutputParamID;
+
+    // Parameter tracking
+    bool parameterTrackingEnabled = false;
+    juce::StringArray trackedParameterIDs;
 
     // Custom sections (optional)
     juce::Component* customLeftSection = nullptr;

@@ -40,6 +40,7 @@
 #include "GUI/AnalogChannelsSectionComponent.h"
 #include "GUI/VolumeSectionComponent.h"
 #include "GUI/Common/PluginHeaderBar.h"
+#include "GUI/Common/PresetBarComponent.h"
 
 //==============================================================================
 /**
@@ -82,6 +83,9 @@ private:
 
     // Header bar (reusable component)
     PluginHeaderBar headerBar;
+
+    // Preset bar (reusable component)
+    PresetBarComponent presetBar;
 
     // Peak Meters (input/output, L/R)
     PeakMeter inputMeterLeft, inputMeterRight;

@@ -4,7 +4,7 @@
               addUsingNamespaceToJuceHeader="0" jucerFormatVersion="1" pluginFormats="buildAU,buildVST3"
               companyName="KuramaSound" companyWebsite="kuramasound.com" companyEmail="filippo@kuramasound.com"
               pluginVST3Category="Distortion,Dynamics,EQ,Filter,Fx,Stereo,Tools"
-              version="0.5.1">
+              version="0.5.2">
   <MAINGROUP id="V9J31M" name="AnalogChannel">
     <GROUP id="{0492BA0B-A712-A6CE-6D1C-7E503B217B54}" name="Source">
       <GROUP id="{EE3BC7E5-7AB5-6AEE-F5EA-B789385DB554}" name="Algorithms">
@@ -31,6 +31,10 @@
                 file="Source/GUI/Common/PluginHeaderBar.cpp"/>
           <FILE id="UcsEq0" name="PluginHeaderBar.h" compile="0" resource="0"
                 file="Source/GUI/Common/PluginHeaderBar.h"/>
+          <FILE id="EYRTxp" name="PresetBarComponent.cpp" compile="1" resource="0"
+                file="Source/GUI/Common/PresetBarComponent.cpp"/>
+          <FILE id="mdDxv0" name="PresetBarComponent.h" compile="0" resource="0"
+                file="Source/GUI/Common/PresetBarComponent.h"/>
         </GROUP>
         <FILE id="IbIlm8" name="AnalogChannelLookAndFeel.h" compile="0" resource="0"
               file="Source/GUI/AnalogChannelLookAndFeel.h"/>
