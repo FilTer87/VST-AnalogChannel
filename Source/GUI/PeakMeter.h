@@ -34,7 +34,7 @@ public:
 
         // Draw dB scale markings inside the meter (overlaid on background)
         g.setColour (AnalogChannelColors::TEXT_MAIN.withAlpha (0.7f));
-        g.setFont (juce::FontOptions (7.0f));
+        g.setFont (juce::Font (7.0f));
 
         for (int db : dbMarkers)
         {

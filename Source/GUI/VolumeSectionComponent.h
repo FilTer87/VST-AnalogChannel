@@ -31,7 +31,7 @@ public:
         outputGainLabel.setText ("OUTPUT", juce::dontSendNotification);
         outputGainLabel.setJustificationType (juce::Justification::centred);
         outputGainLabel.setColour (juce::Label::textColourId, AnalogChannelColors::TEXT_MAIN);
-        outputGainLabel.setFont (juce::FontOptions (9.0f));
+        outputGainLabel.setFont (juce::Font (9.0f));
         addAndMakeVisible (outputGainLabel);
     }
 

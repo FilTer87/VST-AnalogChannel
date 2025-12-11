@@ -29,7 +29,7 @@ public:
         // Section title (like other sections)
         addAndMakeVisible (sectionLabel);
         sectionLabel.setText ("CHANNEL VARIATION", juce::dontSendNotification);
-        sectionLabel.setFont (juce::FontOptions (9.0f, juce::Font::bold));
+        sectionLabel.setFont (juce::Font (9.0f, juce::Font::bold));
         sectionLabel.setColour (juce::Label::textColourId, AnalogChannelColors::TEXT_HIGHLIGHT);
         sectionLabel.setJustificationType (juce::Justification::centred);
 
@@ -45,13 +45,13 @@ public:
         // Channel display label "Channels:" (above display)
         addAndMakeVisible (channelPrefixLabel);
         channelPrefixLabel.setText ("Channels:", juce::dontSendNotification);
-        channelPrefixLabel.setFont (juce::FontOptions (9.0f));
+        channelPrefixLabel.setFont (juce::Font (9.0f));
         channelPrefixLabel.setColour (juce::Label::textColourId, AnalogChannelColors::TEXT_MAIN);
         channelPrefixLabel.setJustificationType (juce::Justification::centred);
 
         // Channel display (shows "1 | 2", "3 | 4", etc.) - centered
         addAndMakeVisible (channelDisplay);
-        channelDisplay.setFont (juce::FontOptions (16.0f, juce::Font::bold));
+        channelDisplay.setFont (juce::Font (16.0f, juce::Font::bold));
         channelDisplay.setColour (juce::Label::textColourId, AnalogChannelColors::LED_GREEN);
         channelDisplay.setColour (juce::Label::backgroundColourId, AnalogChannelColors::BG_DARK);
         channelDisplay.setJustificationType (juce::Justification::centred);

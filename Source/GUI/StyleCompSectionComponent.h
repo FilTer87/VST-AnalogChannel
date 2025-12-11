@@ -68,7 +68,7 @@ public:
         makeupLabel.setText ("Makeup", juce::dontSendNotification);
         makeupLabel.setJustificationType (juce::Justification::centred);
         makeupLabel.setColour (juce::Label::textColourId, AnalogChannelColors::TEXT_MAIN);
-        makeupLabel.setFont (juce::FontOptions (9.0f));
+        makeupLabel.setFont (juce::Font (9.0f));
         addAndMakeVisible (makeupLabel);
 
         // Mix knob (smaller, same size as Makeup)
@@ -84,7 +84,7 @@ public:
         mixLabel.setText ("Mix", juce::dontSendNotification);
         mixLabel.setJustificationType (juce::Justification::centred);
         mixLabel.setColour (juce::Label::textColourId, AnalogChannelColors::TEXT_MAIN);
-        mixLabel.setFont (juce::FontOptions (9.0f));
+        mixLabel.setFont (juce::Font (9.0f));
         addAndMakeVisible (mixLabel);
 
         // GR meter
@@ -115,7 +115,7 @@ public:
         sectionLabel.setText ("STYLE COMP.", juce::dontSendNotification);
         sectionLabel.setJustificationType (juce::Justification::centred);
         sectionLabel.setColour (juce::Label::textColourId, AnalogChannelColors::TEXT_HIGHLIGHT);
-        sectionLabel.setFont (juce::FontOptions (11.0f, juce::Font::bold));
+        sectionLabel.setFont (juce::Font (11.0f, juce::Font::bold));
         addAndMakeVisible (sectionLabel);
 
         // Initialize state
@@ -186,7 +186,7 @@ public:
 
         // Label
         g.setColour (isPreEQActive ? juce::Colour (0xff1a1a1a) : AnalogChannelColors::TEXT_MAIN);
-        g.setFont (juce::FontOptions (10.0f, juce::Font::plain));
+        g.setFont (juce::Font (10.0f, juce::Font::plain));
         g.drawText ("Pre EQ", preEQBounds, juce::Justification::centred);
 
         // Gray out entire section if bypassed

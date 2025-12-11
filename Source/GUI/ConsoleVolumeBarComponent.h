@@ -23,7 +23,7 @@ public:
         consoleLabel.setText ("CONSOLE", juce::dontSendNotification);
         consoleLabel.setJustificationType (juce::Justification::centredLeft);
         consoleLabel.setColour (juce::Label::textColourId, AnalogChannelColors::TEXT_HIGHLIGHT);
-        consoleLabel.setFont (juce::FontOptions (12.0f, juce::Font::bold));
+        consoleLabel.setFont (juce::Font (12.0f, juce::Font::bold));
         addAndMakeVisible (consoleLabel);
 
         // Console algorithm selector
@@ -50,7 +50,7 @@ public:
         consoleDriveLabel.setText ("DRIVE", juce::dontSendNotification);
         consoleDriveLabel.setJustificationType (juce::Justification::centred);
         consoleDriveLabel.setColour (juce::Label::textColourId, AnalogChannelColors::TEXT_MAIN);
-        consoleDriveLabel.setFont (juce::FontOptions (9.0f));
+        consoleDriveLabel.setFont (juce::Font (9.0f));
         addAndMakeVisible (consoleDriveLabel);
 
         // Console bypass button removed (Clean = bypass)
@@ -59,7 +59,7 @@ public:
         volumeLabel.setText ("VOLUME", juce::dontSendNotification);
         volumeLabel.setJustificationType (juce::Justification::centredLeft);
         volumeLabel.setColour (juce::Label::textColourId, AnalogChannelColors::TEXT_HIGHLIGHT);
-        volumeLabel.setFont (juce::FontOptions (12.0f, juce::Font::bold));
+        volumeLabel.setFont (juce::Font (12.0f, juce::Font::bold));
         addAndMakeVisible (volumeLabel);
 
         // Output gain knob
@@ -75,7 +75,7 @@ public:
         outputGainLabel.setText ("OUTPUT", juce::dontSendNotification);
         outputGainLabel.setJustificationType (juce::Justification::centred);
         outputGainLabel.setColour (juce::Label::textColourId, AnalogChannelColors::TEXT_MAIN);
-        outputGainLabel.setFont (juce::FontOptions (9.0f));
+        outputGainLabel.setFont (juce::Font (9.0f));
         addAndMakeVisible (outputGainLabel);
     }
 

@@ -37,7 +37,7 @@ public:
         thresholdLabel.setText ("Thr.", juce::dontSendNotification);
         thresholdLabel.setJustificationType (juce::Justification::centred);
         thresholdLabel.setColour (juce::Label::textColourId, AnalogChannelColors::TEXT_MAIN);
-        thresholdLabel.setFont (juce::FontOptions (9.0f));
+        thresholdLabel.setFont (juce::Font (9.0f));
         addAndMakeVisible (thresholdLabel);
 
         // Mix knob (dry/wet)
@@ -53,7 +53,7 @@ public:
         mixLabel.setText ("Mix", juce::dontSendNotification);
         mixLabel.setJustificationType (juce::Justification::centred);
         mixLabel.setColour (juce::Label::textColourId, AnalogChannelColors::TEXT_MAIN);
-        mixLabel.setFont (juce::FontOptions (9.0f));
+        mixLabel.setFont (juce::Font (9.0f));
         addAndMakeVisible (mixLabel);
 
         // Ratio knob (bipolar)
@@ -69,7 +69,7 @@ public:
         ratioDynamicLabel.setText ("OFF", juce::dontSendNotification);
         ratioDynamicLabel.setJustificationType (juce::Justification::centred);
         ratioDynamicLabel.setColour (juce::Label::textColourId, AnalogChannelColors::TEXT_HIGHLIGHT);
-        ratioDynamicLabel.setFont (juce::FontOptions (10.0f, juce::Font::bold));
+        ratioDynamicLabel.setFont (juce::Font (10.0f, juce::Font::bold));
         addAndMakeVisible (ratioDynamicLabel);
 
         // Fast/Normal toggle button
@@ -93,7 +93,7 @@ public:
         sectionLabel.setText ("LOW DYNAMIC", juce::dontSendNotification);
         sectionLabel.setJustificationType (juce::Justification::centred);
         sectionLabel.setColour (juce::Label::textColourId, AnalogChannelColors::TEXT_HIGHLIGHT);
-        sectionLabel.setFont (juce::FontOptions (11.0f, juce::Font::bold));
+        sectionLabel.setFont (juce::Font (11.0f, juce::Font::bold));
         addAndMakeVisible (sectionLabel);
 
         // Initialize state
