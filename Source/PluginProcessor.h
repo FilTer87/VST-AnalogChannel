@@ -105,6 +105,11 @@ public:
     float getOutStageGRLeft() const { return outStageGRLeft.load (std::memory_order_relaxed); }
     float getOutStageGRRight() const { return outStageGRRight.load (std::memory_order_relaxed); }
 
+    //==============================================================================
+    // GUI Settings Access
+    int getGuiZoom() const;
+    void setGuiZoom (int zoomIndex);
+
 private:
     //==============================================================================
     // Parameter Management
@@ -115,6 +120,11 @@ private:
 
     // Update all sections with current parameter values
     void updateAllSections();
+
+    //==============================================================================
+    // GUI Settings Management (saved globally, not per-project)
+    juce::PropertiesFile::Options guiSettingsOptions;
+    std::unique_ptr<juce::PropertiesFile> guiSettings;
 
     //==============================================================================
     // Processing Sections - Dual Mono (index 0 = left, 1 = right)

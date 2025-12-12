@@ -46,6 +46,23 @@ AnalogChannelAudioProcessor::AnalogChannelAudioProcessor()
 #endif
        parameters (*this, nullptr, juce::Identifier ("AnalogChannel"), createParameterLayout())
 {
+    // Initialize GUI settings (global preferences, not per-project)
+    guiSettingsOptions.applicationName = "AnalogChannel";
+    guiSettingsOptions.filenameSuffix = ".settings";
+    guiSettingsOptions.folderName = "KuramaSound";
+    guiSettingsOptions.osxLibrarySubFolder = "Application Support";
+
+    guiSettings = std::make_unique<juce::PropertiesFile> (guiSettingsOptions);
+
+    // Set default guiZoom if not already set (first time user)
+    if (!guiSettings->containsKey ("guiZoom"))
+    {
+        guiSettings->setValue ("guiZoom", 2); // Default: 125% (index 2)
+        guiSettings->saveIfNeeded();
+    }
+
+    // NOTE: Migration from old APVTS guiZoom parameter happens in setStateInformation()
+    // when loading old projects that still have guiZoom in their saved state
 }
 
 AnalogChannelAudioProcessor::~AnalogChannelAudioProcessor()
@@ -377,8 +394,32 @@ void AnalogChannelAudioProcessor::setStateInformation (const void* data, int siz
     std::unique_ptr<juce::XmlElement> xmlState (getXmlFromBinary (data, sizeInBytes));
 
     if (xmlState.get() != nullptr)
+    {
         if (xmlState->hasTagName (parameters.state.getType()))
-            parameters.replaceState (juce::ValueTree::fromXml (*xmlState));
+        {
+            // Migration: check if old project has guiZoom parameter (from previous version)
+            auto valueTree = juce::ValueTree::fromXml (*xmlState);
+            if (valueTree.hasProperty ("guiZoom"))
+            {
+                // Migrate old APVTS guiZoom to PropertiesFile (one-time migration per old project)
+                float normalizedValue = valueTree.getProperty ("guiZoom");
+                int zoomIndex = static_cast<int> (normalizedValue * 3.0f + 0.5f); // 0.0-1.0 → 0-3 with rounding
+                zoomIndex = juce::jlimit (0, 3, zoomIndex); // Clamp to valid range
+
+                // Save to PropertiesFile (overwrite if already set)
+                if (guiSettings != nullptr)
+                {
+                    guiSettings->setValue ("guiZoom", zoomIndex);
+                    guiSettings->saveIfNeeded();
+                }
+
+                // Remove guiZoom from state to clean up old parameter
+                valueTree.removeProperty ("guiZoom", nullptr);
+            }
+
+            parameters.replaceState (valueTree);
+        }
+    }
 }
 
 //==============================================================================
@@ -859,14 +900,34 @@ juce::AudioProcessorValueTreeState::ParameterLayout AnalogChannelAudioProcessor:
         0)); // Default: pair 0 (channels 1|2)
 
     // ============================================================================
-    // GUI: Zoom Preference
+    // GUI: Zoom Preference - MOVED TO PropertiesFile (global setting)
     // ============================================================================
-    params.push_back (std::make_unique<juce::AudioParameterChoice> (
-        "guiZoom", "GUI Zoom",
-        juce::StringArray { "75%", "100%", "125%", "150%" },
-        2)); // Default: 125% (index 2 = actual opening size)
+    // NOTE: guiZoom parameter removed from APVTS (was causing issues in Logic Pro)
+    // Now saved globally in PropertiesFile instead of per-project in APVTS
+    // Migration code in constructor handles existing users seamlessly
 
     return { params.begin(), params.end() };
+}
+
+//==============================================================================
+// GUI Settings Management
+//==============================================================================
+
+int AnalogChannelAudioProcessor::getGuiZoom() const
+{
+    if (guiSettings != nullptr)
+        return guiSettings->getIntValue ("guiZoom", 2); // Default: 125% (index 2)
+
+    return 2; // Fallback default
+}
+
+void AnalogChannelAudioProcessor::setGuiZoom (int zoomIndex)
+{
+    if (guiSettings != nullptr)
+    {
+        guiSettings->setValue ("guiZoom", zoomIndex);
+        guiSettings->saveIfNeeded();
+    }
 }
 
 //==============================================================================

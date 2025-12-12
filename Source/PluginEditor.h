@@ -48,8 +48,7 @@
     Hardware-inspired GUI with knobs, LED meters, and clean layout
 */
 class AnalogChannelAudioProcessorEditor  : public juce::AudioProcessorEditor,
-                                               private juce::Timer,
-                                               private juce::AudioProcessorValueTreeState::Listener
+                                               private juce::Timer
 {
 public:
     AnalogChannelAudioProcessorEditor (AnalogChannelAudioProcessor&);
@@ -58,6 +57,9 @@ public:
     //==============================================================================
     void paint (juce::Graphics&) override;
     void resized() override;
+
+    // Called when component is added to parent (used to apply saved zoom)
+    void parentHierarchyChanged() override;
 
 private:
     //==============================================================================
@@ -70,9 +72,6 @@ private:
 
     // Apply zoom scale to plugin window
     void applyZoomScale (float scale);
-
-    // Listen to parameter changes (for zoom preset recall)
-    void parameterChanged (const juce::String& parameterID, float newValue) override;
 
     //==============================================================================
     // Processor reference
@@ -108,6 +107,10 @@ private:
 
     // Current zoom scale (0.75, 1.0, 1.25, 1.5)
     float currentZoomScale = 1.0f;
+
+    // Saved zoom scale to apply when window is ready
+    float savedZoomScale = 1.25f;
+    bool hasAppliedSavedZoom = false;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AnalogChannelAudioProcessorEditor)
 };

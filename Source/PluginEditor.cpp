@@ -83,23 +83,18 @@ AnalogChannelAudioProcessorEditor::AnalogChannelAudioProcessorEditor (AnalogChan
     // Load logo image for About dialog
     bannerLogoImage = juce::ImageCache::getFromMemory (BinaryData::logo_banner_png, BinaryData::logo_banner_pngSize);
 
-    // Load saved zoom preference and register listener
-    audioProcessor.getValueTreeState().addParameterListener ("guiZoom", this);
+    // Load saved zoom preference from PropertiesFile (global setting, not per-project)
+    int zoomIndex = audioProcessor.getGuiZoom(); // 0-3 → 75%, 100%, 125%, 150%
+    const float zoomScales[] = { 0.75f, 1.0f, 1.25f, 1.5f };
 
-    auto* zoomParam = dynamic_cast<juce::AudioParameterChoice*> (
-        audioProcessor.getValueTreeState().getParameter ("guiZoom"));
+    // Save the loaded zoom to apply later when window is ready
+    savedZoomScale = zoomScales[zoomIndex];
+    currentZoomScale = savedZoomScale;
 
-    if (zoomParam != nullptr)
-    {
-        int zoomIndex = zoomParam->getIndex();  // Get choice index directly (0-3)
-        const float zoomScales[] = { 0.75f, 1.0f, 1.25f, 1.5f };
-        applyZoomScale (zoomScales[zoomIndex]);
-    }
-    else
-    {
-        // Default size if parameter not found (fallback to 125%)
-        applyZoomScale (1.25f);
-    }
+    // Set initial size at default scale (will be adjusted in parentHierarchyChanged)
+    const int baseWidth = 710;
+    const int baseHeight = 624;
+    setSize (baseWidth, baseHeight);
 
     // Start timer for meter updates (30 Hz)
     startTimerHz (30);
@@ -107,7 +102,6 @@ AnalogChannelAudioProcessorEditor::AnalogChannelAudioProcessorEditor (AnalogChan
 
 AnalogChannelAudioProcessorEditor::~AnalogChannelAudioProcessorEditor()
 {
-    audioProcessor.getValueTreeState().removeParameterListener ("guiZoom", this);
     stopTimer();
     setLookAndFeel (nullptr);
 }
@@ -420,58 +414,38 @@ void AnalogChannelAudioProcessorEditor::applyZoomScale (float scale)
     // Apply the scale factor (JUCE handles everything)
     setScaleFactor (scale);
 
-    // Save zoom preference to ValueTreeState
-    auto* zoomParam = audioProcessor.getValueTreeState().getParameter ("guiZoom");
-    if (zoomParam != nullptr)
-    {
-        // Map scale to parameter index (0-3)
-        int zoomIndex = 2;  // Default: 125%
-        if (scale <= 0.75f) zoomIndex = 0;       // 75%
-        else if (scale <= 1.0f) zoomIndex = 1;   // 100%
-        else if (scale <= 1.25f) zoomIndex = 2;  // 125%
-        else zoomIndex = 3;                      // 150%
+    // Save zoom preference to PropertiesFile (global setting)
+    int zoomIndex = 2;  // Default: 125%
+    if (scale <= 0.75f) zoomIndex = 0;       // 75%
+    else if (scale <= 1.0f) zoomIndex = 1;   // 100%
+    else if (scale <= 1.25f) zoomIndex = 2;  // 125%
+    else zoomIndex = 3;                      // 150%
 
-        zoomParam->setValueNotifyingHost (zoomIndex / 3.0f);  // Normalize to 0-1
-    }
+    audioProcessor.setGuiZoom (zoomIndex);
 }
 
-void AnalogChannelAudioProcessorEditor::parameterChanged (const juce::String& parameterID, float newValue)
+void AnalogChannelAudioProcessorEditor::parentHierarchyChanged()
 {
-    // Listen for zoom parameter changes (e.g., when loading presets)
-    if (parameterID == "guiZoom")
+    // Apply saved zoom when window is added to parent (DAW window is ready)
+    if (!hasAppliedSavedZoom && isShowing())
     {
-        auto* zoomParam = dynamic_cast<juce::AudioParameterChoice*> (
-            audioProcessor.getValueTreeState().getParameter ("guiZoom"));
+        hasAppliedSavedZoom = true;
 
-        if (zoomParam != nullptr)
+        // Apply the saved zoom scale
+        if (std::abs (savedZoomScale - 1.25f) > 0.01f)  // Only if different from default
         {
-            int zoomIndex = zoomParam->getIndex();
-            const float zoomScales[] = { 0.75f, 1.0f, 1.25f, 1.5f };
-
-            // Apply the new zoom scale (but don't save it again to avoid loop)
-            if (zoomIndex >= 0 && zoomIndex < 4)
+            juce::MessageManager::callAsync ([this]()
             {
-                float newScale = zoomScales[zoomIndex];
-
-                // Only apply if different from current scale (avoid unnecessary updates)
-                if (std::abs (newScale - currentZoomScale) > 0.01f)
+                if (auto* editor = this)
                 {
-                    currentZoomScale = newScale;
-
-                    // Base size: 710x624 (original 580 + 40 preset bar + 4 padding)
                     const int baseWidth = 710;
                     const int baseHeight = 624;
 
-                    // First, reset any previous transform
-                    setTransform (juce::AffineTransform());
-
-                    // Set the base size (unscaled)
-                    setSize (baseWidth, baseHeight);
-
-                    // Apply the scale factor (JUCE handles everything)
-                    setScaleFactor (newScale);
+                    editor->setTransform (juce::AffineTransform());
+                    editor->setSize (baseWidth, baseHeight);
+                    editor->setScaleFactor (savedZoomScale);
                 }
-            }
+            });
         }
     }
 }

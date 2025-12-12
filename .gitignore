@@ -53,6 +53,9 @@ DerivedData/
 *.dSYM.zip
 *.dSYM
 
+#Win 11
+nul
+
 # macOS
 .DS_Store
 .AppleDouble
