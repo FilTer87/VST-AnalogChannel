@@ -1,7 +1,7 @@
 ================================================================================
                             AnalogChannel VST3
                           Channel Strip Plugin
-                               Version 0.5.2
+                               Version 0.6.0
 ================================================================================
 
 Author: Filippo Terenzi
@@ -54,8 +54,9 @@ macOS:
 Linux:
 - Modern 64-bit distro (Ubuntu 22.04+, Arch, Fedora, etc.)
 - VST3-compatible DAW/host
-- JUCE 7.x available via juce-config or local checkout
-- CMake ≥ 3.15, compiler toolchain, pkg-config, ALSA + X11 dev headers
+- ALSA, JACK, X11 libraries
+- Modern multi-core CPU recommended
+- 4 GB RAM minimum
 
 ================================================================================
 INSTALLATION

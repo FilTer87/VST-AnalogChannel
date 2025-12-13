@@ -4,7 +4,7 @@
               addUsingNamespaceToJuceHeader="0" jucerFormatVersion="1" pluginFormats="buildAU,buildVST3"
               companyName="KuramaSound" companyWebsite="kuramasound.com" companyEmail="filippo@kuramasound.com"
               pluginVST3Category="Distortion,Dynamics,EQ,Filter,Fx,Stereo,Tools"
-              version="0.5.2">
+              version="0.6.0">
   <MAINGROUP id="V9J31M" name="AnalogChannel">
     <GROUP id="{0492BA0B-A712-A6CE-6D1C-7E503B217B54}" name="Source">
       <GROUP id="{EE3BC7E5-7AB5-6AEE-F5EA-B789385DB554}" name="Algorithms">

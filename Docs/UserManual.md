@@ -1,7 +1,7 @@
 # AnalogChannel VST3 Channel Strip
 ## User Manual
 
-**Version 0.5.2**
+**Version 0.6.0**
 **Copyright © 2025 KuramaSound**
 **Author: Filippo Terenzi**
 
@@ -1093,7 +1093,7 @@ AnalogChannel has **three saturation stages** that can be stacked for complex ha
 ### Plugin Information
 
 - **Plugin Name**: AnalogChannel
-- **Version**: 0.5.2
+- **Version**: 0.6.0
 - **Company**: KuramaSound di Filippo Terenzi
 - **Author**: Filippo Terenzi
 - **Plugin Format**: VST3
@@ -1255,4 +1255,4 @@ AnalogChannel is open-source. The full source code is available on GitHub:
 
 ---
 
-*AnalogChannel User Manual v0.5.2 | Copyright © 2025 KuramaSound | Filippo Terenzi*
+*AnalogChannel User Manual v0.6.0 | Copyright © 2025 KuramaSound | Filippo Terenzi*
