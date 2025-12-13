@@ -36,6 +36,31 @@ If you like AnalogChannel, please consider supporting the project: https://buyme
 
 ---
 
-**License**: GPL v3 | **Developer**: Filippo Terenzi - KuramaSound | **Format**: VST3 (Windows)
+**License**: GPL v3 | **Developer**: Filippo Terenzi - KuramaSound | **Formats**: VST3 (Windows/macOS/Linux)
+## Linux build and install
+
+AnalogChannel now ships with a CMake-based build that works on Linux (VST3 + optional standalone test host).
+
+### Prerequisites
+- JUCE 7.x available either via `juce-config` package or a local JUCE clone (set `JUCE_DIR=/path/to/JUCE`)
+- CMake ≥ 3.15
+- Toolchain: `build-essential` (or clang), `pkg-config`, `alsa`/`pipewire-jack` dev packages, X11 dev headers
+
+### Quick build
+```bash
+# from the repo root
+./scripts/build-linux.sh
+```
+This will configure + build in `./build/` and install to `~/.local` (`~/.local/lib/vst3/AnalogChannel.vst3`). Override with `PREFIX=/custom/prefix ./scripts/build-linux.sh`.
+
+Manual CMake invocation:
+```bash
+cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DJUCE_DIR=/path/to/JUCE -DANALOGCHANNEL_STANDALONE=ON
+cmake --build build --config Release --parallel
+cmake --install build --config Release --prefix ~/.local
+```
+
+### LV2 status
+JUCE does not provide an official LV2 target. Bringing LV2 support would require an external wrapper (e.g. DPF/distribution or a JUCE-LV2 fork). No LV2 binary is produced in this repo, but the CMake layout keeps the code ready should such a wrapper be added later.
 
 See `CREDITS.md` for detailed third-party algorithm attributions.
