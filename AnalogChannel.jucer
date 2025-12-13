@@ -135,7 +135,7 @@
         <MODULEPATH id="juce_graphics"/>
         <MODULEPATH id="juce_gui_basics"/>
         <MODULEPATH id="juce_gui_extra"/>
-        <MODULEPATH id="juce_audio_processors_headless" path="../../Users/ACER/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_processors_headless"/>
       </MODULEPATHS>
     </VS2022>
     <XCODE_MAC targetFolder="Builds/MacOSX">
@@ -156,7 +156,7 @@
         <MODULEPATH id="juce_graphics"/>
         <MODULEPATH id="juce_gui_basics"/>
         <MODULEPATH id="juce_gui_extra"/>
-        <MODULEPATH id="juce_audio_processors_headless" path="../../Users/ACER/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_processors_headless"/>
       </MODULEPATHS>
     </XCODE_MAC>
   </EXPORTFORMATS>
