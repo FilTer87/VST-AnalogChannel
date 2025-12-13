@@ -38,7 +38,7 @@ public:
 
         for (int db : dbMarkers)
         {
-            float y = dbToY (db, meterBounds.getHeight());
+            float y = dbToY (static_cast<float>(db), meterBounds.getHeight());
 
             // Draw text inside meter, centered
             auto textBounds = juce::Rectangle<float> (meterBounds.getX(), y - 5, meterBounds.getWidth(), 10);

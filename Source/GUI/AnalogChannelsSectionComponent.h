@@ -115,7 +115,7 @@ public:
 
         // Title area separator (optional)
         g.setColour (AnalogChannelColors::BORDER_DARK);
-        g.drawLine (4, 54, bounds.getWidth() - 4, 54, 1.0f);
+        g.drawLine (4.0f, 54.0f, static_cast<float>(bounds.getWidth()) - 4.0f, 54.0f, 1.0f);
     }
 
 private:

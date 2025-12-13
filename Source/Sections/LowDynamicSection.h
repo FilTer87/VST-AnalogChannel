@@ -138,8 +138,7 @@ protected:
             detectorLevel = std::sqrt(rmsState);
         }
 
-        // Convert smoothed detector level to dB (for gain calculation)
-        float detectorDB = 20.0f * std::log10(std::max(detectorLevel, 1e-6f));
+        // Note: detectorLevel is smoothed for visual metering, but we use instantDB for threshold gating
 
         // === STEP 2: COMPUTE TARGET GAIN ===
         float targetGainDB = 0.0f;  // Default: no change

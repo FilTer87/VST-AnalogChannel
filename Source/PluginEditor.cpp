@@ -114,7 +114,7 @@ void AnalogChannelAudioProcessorEditor::paint (juce::Graphics& g)
 
     // Draw side and bottom borders
     g.setColour (AnalogChannelColors::BORDER_LIGHT);
-    g.drawLine (0, getHeight() - 1, getWidth(), getHeight() - 1, 1.0f);  // Bottom border
+    g.drawLine (0.0f, static_cast<float>(getHeight() - 1), static_cast<float>(getWidth()), static_cast<float>(getHeight() - 1), 1.0f);  // Bottom border
 }
 
 void AnalogChannelAudioProcessorEditor::resized()

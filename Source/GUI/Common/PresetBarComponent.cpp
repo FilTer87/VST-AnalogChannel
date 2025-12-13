@@ -273,7 +273,7 @@ void PresetBarComponent::paint(juce::Graphics& g)
 
     // Top border
     g.setColour(KuramaColors::HEADER_BORDER);
-    g.drawLine(0, 0, getWidth(), 0, 1.0f);
+    g.drawLine(0.0f, 0.0f, static_cast<float>(getWidth()), 0.0f, 1.0f);
 }
 
 //==============================================================================

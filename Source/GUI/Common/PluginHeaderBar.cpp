@@ -86,8 +86,8 @@ void PluginHeaderBar::paint (juce::Graphics& g)
 
     // Draw borders
     g.setColour (KuramaColors::HEADER_BORDER);
-    g.drawLine (0, HEIGHT, getWidth(), HEIGHT, 1.0f);  // Bottom border
-    g.drawLine (0, 0, getWidth(), 0, 1.0f);             // Top border
+    g.drawLine (0.0f, static_cast<float>(HEIGHT), static_cast<float>(getWidth()), static_cast<float>(HEIGHT), 1.0f);  // Bottom border
+    g.drawLine (0.0f, 0.0f, static_cast<float>(getWidth()), 0.0f, 1.0f);             // Top border
 }
 
 void PluginHeaderBar::resized()
