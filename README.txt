@@ -51,7 +51,11 @@ macOS:
 - Modern multi-core CPU recommended
 - 4 GB RAM minimum
 
-Linux: Work In Progress
+Linux:
+- Modern 64-bit distro (Ubuntu 22.04+, Arch, Fedora, etc.)
+- VST3-compatible DAW/host
+- JUCE 7.x available via juce-config or local checkout
+- CMake ≥ 3.15, compiler toolchain, pkg-config, ALSA + X11 dev headers
 
 ================================================================================
 INSTALLATION
@@ -103,6 +107,17 @@ AU (Audio Units):
 3. Clear AU cache:
    rm -rf ~/Library/Caches/AudioUnitCache
 4. Rescan plugins in your DAW (Logic Pro: AU Manager → Reset & Rescan)
+
+LINUX
+-----
+1. Build and install (writes to ~/.local/lib/vst3 by default):
+   ./scripts/build-linux.sh
+   # override install prefix:
+   PREFIX=/usr/local ./scripts/build-linux.sh
+2. Verify install:
+   ls ~/.local/lib/vst3/AnalogChannel.vst3
+3. Rescan plugins in your DAW
+4. If your host expects a different VST3 path, copy AnalogChannel.vst3 there
 
 ================================================================================
 DOCUMENTATION
