@@ -111,7 +111,7 @@ public:
         sectionLabel.setText ("FILTERS", juce::dontSendNotification);
         sectionLabel.setJustificationType (juce::Justification::centred);
         sectionLabel.setColour (juce::Label::textColourId, AnalogChannelColors::TEXT_HIGHLIGHT);
-        sectionLabel.setFont (juce::Font (11.0f, juce::Font::bold));
+        sectionLabel.setFont (juce::FontOptions (11.0f, juce::Font::bold));
         addAndMakeVisible (sectionLabel);
 
         // Initialize button labels based on parameter values
@@ -180,7 +180,7 @@ public:
 
         // Arrow symbol (using > instead of unicode arrow for better compatibility)
         g.setColour (isPostActive ? juce::Colour (0xff1a1a1a) : AnalogChannelColors::TEXT_MAIN);
-        g.setFont (juce::Font (10.0f, juce::Font::plain));
+        g.setFont (juce::FontOptions (10.0f, juce::Font::plain));
         g.drawText ("Post >", postBounds, juce::Justification::centred);
 
         // Gray out entire section if bypassed

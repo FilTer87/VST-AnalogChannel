@@ -38,7 +38,7 @@ public:
     juce::Label* createSliderTextBox (juce::Slider& slider) override
     {
         auto* label = LookAndFeel_V4::createSliderTextBox (slider);
-        label->setFont (juce::Font (9.0f));  // Smaller font for values (9pt)
+        label->setFont (juce::FontOptions (9.0f));  // Smaller font for values (9pt)
         label->setJustificationType (juce::Justification::centred);
         label->setColour (juce::Label::textColourId, AnalogChannelColors::TEXT_MAIN);
         label->setColour (juce::Label::backgroundColourId, juce::Colours::transparentBlack);
@@ -80,7 +80,7 @@ public:
             {
                 const float alpha = label.isEnabled() ? 1.0f : 0.5f;
                 g.setColour (label.findColour (juce::Label::textColourId).withMultipliedAlpha (alpha));
-                g.setFont (juce::Font (9.0f));  // 9pt for slider values
+                g.setFont (juce::FontOptions (9.0f));  // 9pt for slider values
 
                 auto textArea = label.getLocalBounds();
                 g.drawFittedText (label.getText(), textArea, label.getJustificationType(), 1);

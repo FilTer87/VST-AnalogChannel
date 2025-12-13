@@ -69,14 +69,14 @@ public:
         bassFreqLabel.setText ("0.0", juce::dontSendNotification);
         bassFreqLabel.setJustificationType (juce::Justification::centred);
         bassFreqLabel.setColour (juce::Label::textColourId, AnalogChannelColors::TEXT_MAIN);
-        bassFreqLabel.setFont (juce::Font (8.0f));
+        bassFreqLabel.setFont (juce::FontOptions (8.0f));
         addAndMakeVisible (bassFreqLabel);
 
         // Bass frequency knob label
         bassMidCutLabel.setText ("Mid Cut", juce::dontSendNotification);
         bassMidCutLabel.setJustificationType (juce::Justification::centred);
         bassMidCutLabel.setColour (juce::Label::textColourId, AnalogChannelColors::TEXT_MAIN);
-        bassMidCutLabel.setFont (juce::Font (7.0f));
+        bassMidCutLabel.setFont (juce::FontOptions (7.0f));
         addAndMakeVisible (bassMidCutLabel);
 
         bassFreqKnob.addListener (this);
@@ -93,7 +93,7 @@ public:
         bell1FreqLabel.setText ("1k", juce::dontSendNotification);
         bell1FreqLabel.setJustificationType (juce::Justification::centred);
         bell1FreqLabel.setColour (juce::Label::textColourId, AnalogChannelColors::TEXT_MAIN);
-        bell1FreqLabel.setFont (juce::Font (9.0f));
+        bell1FreqLabel.setFont (juce::FontOptions (9.0f));
         addAndMakeVisible (bell1FreqLabel);
 
         // Add listener to update label
@@ -124,7 +124,7 @@ public:
         bell2FreqLabel.setText ("3.5k", juce::dontSendNotification);
         bell2FreqLabel.setJustificationType (juce::Justification::centred);
         bell2FreqLabel.setColour (juce::Label::textColourId, AnalogChannelColors::TEXT_MAIN);
-        bell2FreqLabel.setFont (juce::Font (9.0f));
+        bell2FreqLabel.setFont (juce::FontOptions (9.0f));
         addAndMakeVisible (bell2FreqLabel);
 
         // Add listener to update label
@@ -169,14 +169,14 @@ public:
         trebleFreqLabel.setText ("0.0", juce::dontSendNotification);
         trebleFreqLabel.setJustificationType (juce::Justification::centred);
         trebleFreqLabel.setColour (juce::Label::textColourId, AnalogChannelColors::TEXT_MAIN);
-        trebleFreqLabel.setFont (juce::Font (8.0f));
+        trebleFreqLabel.setFont (juce::FontOptions (8.0f));
         addAndMakeVisible (trebleFreqLabel);
 
         // Treble frequency knob label
         trebleMidCutLabel.setText ("Mid Cut", juce::dontSendNotification);
         trebleMidCutLabel.setJustificationType (juce::Justification::centred);
         trebleMidCutLabel.setColour (juce::Label::textColourId, AnalogChannelColors::TEXT_MAIN);
-        trebleMidCutLabel.setFont (juce::Font (7.0f));
+        trebleMidCutLabel.setFont (juce::FontOptions (7.0f));
         addAndMakeVisible (trebleMidCutLabel);
 
         trebleFreqKnob.addListener (this);
@@ -194,7 +194,7 @@ public:
         sectionLabel.setText ("EQUALIZER", juce::dontSendNotification);
         sectionLabel.setJustificationType (juce::Justification::centred);
         sectionLabel.setColour (juce::Label::textColourId, AnalogChannelColors::TEXT_HIGHLIGHT);
-        sectionLabel.setFont (juce::Font (11.0f, juce::Font::bold));
+        sectionLabel.setFont (juce::FontOptions (11.0f, juce::Font::bold));
         addAndMakeVisible (sectionLabel);
 
         // Initialize frequency labels based on current parameter values

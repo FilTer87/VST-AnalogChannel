@@ -104,7 +104,7 @@ public:
 
         // Draw dB scale labels below LEDs
         g.setColour (AnalogChannelColors::TEXT_DIM);
-        g.setFont (juce::Font (7.0f));
+        g.setFont (juce::FontOptions (7.0f));
 
         // Select which LEDs to label based on meter type
         std::vector<int> labelIndices;

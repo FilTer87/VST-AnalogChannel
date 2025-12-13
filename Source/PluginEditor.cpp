@@ -127,13 +127,13 @@ void AnalogChannelAudioProcessorEditor::paint (juce::Graphics& g)
 
     // First part: "AnalogChannel " (bold)
     g.setColour (AnalogChannelColors::TEXT_HIGHLIGHT);
-    g.setFont (juce::Font (14.0f, juce::Font::bold));
+    g.setFont (juce::FontOptions (14.0f, juce::Font::bold));
     juce::String firstPart = "AnalogChannel ";
-    int firstPartWidth = g.getCurrentFont().getStringWidth (firstPart);
+    int firstPartWidth = GlyphArrangement::getStringWidth (juce::FontOptions (14.0f, juce::Font::bold), firstPart);
     g.drawText (firstPart, textStartX, yCenter - 7, firstPartWidth, 14, juce::Justification::centredLeft);
 
     // Second part: "| KuramaSound" (normal weight)
-    g.setFont (juce::Font (14.0f, juce::Font::plain));
+    g.setFont (juce::FontOptions (14.0f, juce::Font::plain));
     g.drawText ("| KuramaSound", textStartX + firstPartWidth, yCenter - 7, 200, 14, juce::Justification::centredLeft);
 
     // Draw borders

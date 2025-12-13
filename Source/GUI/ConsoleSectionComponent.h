@@ -71,7 +71,7 @@ public:
         sectionLabel.setText ("CONSOLE", juce::dontSendNotification);
         sectionLabel.setJustificationType (juce::Justification::centred);
         sectionLabel.setColour (juce::Label::textColourId, AnalogChannelColors::TEXT_HIGHLIGHT);
-        sectionLabel.setFont (juce::Font (11.0f, juce::Font::bold));
+        sectionLabel.setFont (juce::FontOptions (11.0f, juce::Font::bold));
         addAndMakeVisible (sectionLabel);
 
         // Initialize state
