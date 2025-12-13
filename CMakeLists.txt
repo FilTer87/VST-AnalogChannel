@@ -63,6 +63,8 @@ juce_generate_juce_header(AnalogChannel)
 target_sources(AnalogChannel PRIVATE
     Source/PluginProcessor.cpp
     Source/PluginEditor.cpp
+    Source/GUI/Common/PluginHeaderBar.cpp
+    Source/GUI/Common/PresetBarComponent.cpp
 )
 
 target_include_directories(AnalogChannel PRIVATE
@@ -105,6 +107,8 @@ target_link_libraries(AnalogChannel
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR}/Source FILES
     Source/PluginProcessor.cpp
     Source/PluginEditor.cpp
+    Source/GUI/Common/PluginHeaderBar.cpp
+    Source/GUI/Common/PresetBarComponent.cpp
 )
 
 #------------------------------------------------------------------------------
